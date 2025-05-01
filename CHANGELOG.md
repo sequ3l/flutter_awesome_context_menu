@@ -1,3 +1,16 @@
+## 0.0.3
+
+* Web platform compatibility improvements:
+  * Refactored platform detection code to avoid direct `dart:io` imports on web
+  * Implemented conditional imports for platform-specific code
+  * Added separate implementations for web and native platforms
+  * Fixed pub.dev platform compatibility issues
+  * Full web platform support without compromising native platform features
+
+## 0.0.2
+
+* Setup pub.dev Github Actions publishing
+
 ## 0.0.1
 
 * Initial public release of Flutter Awesome Context Menu package
