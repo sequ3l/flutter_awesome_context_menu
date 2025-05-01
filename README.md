@@ -11,23 +11,30 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/to/develop-packages).
 -->
 
+[![Build Status](https://github.com/sequ3l/flutter_awesome_context_menu/workflows/Flutter%20CI/badge.svg)](https://github.com/sequ3l/flutter_awesome_context_menu/actions)
+[![Likes](https://img.shields.io/pub/likes/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
+[![Points](https://img.shields.io/pub/points/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
+
 # Flutter Awesome Context Menu
 
 [![Pub Version](https://img.shields.io/pub/v/flutter_awesome_context_menu.svg)](https://pub.dev/packages/flutter_awesome_context_menu)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Platform Support](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/sequ3l/flutter_awesome_context_menu)
+[![Star on GitHub](https://img.shields.io/github/stars/sequ3l/flutter_awesome_context_menu.svg?style=flat&logo=github&colorB=deeppink&label=stars)](https://github.com/sequ3l/flutter_awesome_context_menu)
 
 [**Live Demo**](https://sequ3l.github.io/flutter_awesome_context_menu_examples/) - Try the package in your browser
 
-<!--
-[![Build Status](https://github.com/sequ3l/flutter_awesome_context_menu/workflows/Flutter%20CI/badge.svg)](https://github.com/sequ3l/flutter_awesome_context_menu/actions)
-[![Likes](https://img.shields.io/pub/likes/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
-[![Popularity](https://img.shields.io/pub/popularity/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
-[![Points](https://img.shields.io/pub/points/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
-[![Star on GitHub](https://img.shields.io/github/stars/sequ3l/flutter_awesome_context_menu.svg?style=flat&logo=github&colorB=deeppink&label=stars)](https://github.com/sequ3l/flutter_awesome_context_menu)
--->
-
 A Flutter package that provides a browser-like right-click context menu for your Flutter applications. This package makes it easy to add context menu functionality similar to what you'd find in web browsers when right-clicking on links, as well as create fully custom context menus for any widget.
+
+## AI-Assisted Development
+
+This package was created through a combination of developer expertise and AI-powered collaborative development using GitHub Copilot in Agent mode with Anthropic's Claude 3.7 Sonnet model. What would typically require weeks or even a month of traditional development was completed in approximately 12 hours through rapid application development techniques.
+
+For those interested in the technical details:
+- 📋 [**ANALYSIS.md**](ANALYSIS.md) provides a comprehensive breakdown of the project architecture, components, and features
+- 🔧 [**IMPLEMENTATION.md**](IMPLEMENTATION.md) dives deep into the implementation details and design decisions
+
+This project demonstrates how modern AI tools can dramatically accelerate the development of feature-rich packages without compromising on quality or flexibility. The development approach focused on creating robust, well-documented components through iterative refinement guided by AI assistance.
 
 ## Table of Contents
 
@@ -190,15 +197,15 @@ You can use the package purely for custom context menus without any link functio
 ```dart
 AwesomeContextMenuArea(
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Custom action',
       icon: Icons.star,
       onSelected: () {
         print('Custom action selected!');
       },
     ),
-    ContextMenuItem.separator(),
-    ContextMenuItem(
+    AwesomeContextMenuItem.separator(),
+    AwesomeContextMenuItem(
       label: 'Disabled item',
       icon: Icons.block,
       enabled: false,
@@ -216,7 +223,7 @@ You can combine both link functionality and custom menu items:
 AwesomeContextMenuArea(
   link: 'https://github.com/flutter/flutter',
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Star Repository',
       icon: Icons.star,
       onSelected: () {
@@ -236,12 +243,12 @@ You can generate menu items dynamically using the `menuItemBuilder` callback:
 AwesomeContextMenuArea(
   menuItemBuilder: (context) {
     return [
-      ContextMenuItem(
+      AwesomeContextMenuItem(
         label: 'Generated at ${DateTime.now().toString()}',
         icon: Icons.access_time,
         onSelected: () {},
       ),
-      ContextMenuItem(
+      AwesomeContextMenuItem(
         label: 'Screen width: ${MediaQuery.of(context).size.width.toStringAsFixed(0)}px',
         icon: Icons.aspect_ratio,
         onSelected: () {},
@@ -259,7 +266,7 @@ You can create menu items that don't dismiss the menu when selected:
 ```dart
 AwesomeContextMenuArea(
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Toggle Option',
       icon: Icons.check_box_outline_blank,
       dismissMenuOnSelect: false, // Keep menu open after selection
@@ -279,54 +286,54 @@ You can create nested context menus with submenus:
 ```dart
 AwesomeContextMenuArea(
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'File',
       icon: Icons.folder,
       children: [  // Submenu items
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'New',
           icon: Icons.add,
           children: [  // Second level submenu
-            ContextMenuItem(
+            AwesomeContextMenuItem(
               label: 'Document',
               icon: Icons.description,
               onSelected: () => print('New Document'),
             ),
-            ContextMenuItem(
+            AwesomeContextMenuItem(
               label: 'Spreadsheet',
               icon: Icons.grid_on,
               onSelected: () => print('New Spreadsheet'),
             ),
           ],
         ),
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Open',
           icon: Icons.folder_open,
           onSelected: () => print('Open'),
         ),
-        ContextMenuItem.separator(),
-        ContextMenuItem(
+        AwesomeContextMenuItem.separator(),
+        AwesomeContextMenuItem(
           label: 'Save',
           icon: Icons.save,
           onSelected: () => print('Save'),
         ),
       ],
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Edit',
       icon: Icons.edit,
       children: [
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Cut',
           icon: Icons.content_cut,
           onSelected: () => print('Cut'),
         ),
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Copy',
           icon: Icons.content_copy,
           onSelected: () => print('Copy'),
         ),
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Paste',
           icon: Icons.content_paste,
           onSelected: () => print('Paste'),
@@ -345,46 +352,46 @@ You can control how submenus are revealed:
 ```dart
 AwesomeContextMenuArea(
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Hover to Reveal',
       icon: Icons.mouse,
       subMenuInteractionMode: SubMenuInteractionMode.hover,
       children: [
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Only shown on hover',
           onSelected: () {},
         ),
       ],
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Click to Reveal',
       icon: Icons.touch_app,
       subMenuInteractionMode: SubMenuInteractionMode.click,
       children: [
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Only shown on click/tap',
           onSelected: () {},
         ),
       ],
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Long Press to Reveal',
       icon: Icons.touch_app,
       subMenuInteractionMode: SubMenuInteractionMode.longPress,
       children: [
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Only shown on long press',
           onSelected: () {},
         ),
       ],
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Auto (Platform Dependent)',
       icon: Icons.devices,
       // This is the default behavior - hover on desktop, click on mobile
       subMenuInteractionMode: SubMenuInteractionMode.auto,
       children: [
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Uses platform default interaction',
           onSelected: () {},
         ),
@@ -403,7 +410,7 @@ You can nest `AwesomeContextMenuArea` widgets to create layered context menus th
 AwesomeContextMenuArea(
   // Parent context menu configuration
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Parent action',
       icon: Icons.house,
       onSelected: () {
@@ -421,7 +428,7 @@ AwesomeContextMenuArea(
         AwesomeContextMenuArea(
           // Child context menu configuration
           menuItems: [
-            ContextMenuItem(
+            AwesomeContextMenuItem(
               label: 'Child action',
               icon: Icons.child_care,
               onSelected: () {
