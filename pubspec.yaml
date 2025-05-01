@@ -4,13 +4,13 @@ version: 0.0.1
 homepage: https://github.com/sequ3l/flutter_awesome_context_menu
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ">=2.18.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  url_launcher: ^6.1.10
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:
