@@ -13,15 +13,14 @@ and the Flutter guide for
 
 # Flutter Awesome Context Menu
 
-<!--
 [![Pub Version](https://img.shields.io/pub/v/flutter_awesome_context_menu.svg)](https://pub.dev/packages/flutter_awesome_context_menu)
-[![Build Status](https://github.com/sequ3l/flutter_awesome_context_menu/workflows/Flutter%20CI/badge.svg)](https://github.com/sequ3l/flutter_awesome_context_menu/actions)
--->
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Platform Support](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/sequ3l/flutter_awesome_context_menu)
 
+[**Live Demo**](https://sequ3l.github.io/flutter_awesome_context_menu_examples/) - Try the package in your browser
+
 <!--
+[![Build Status](https://github.com/sequ3l/flutter_awesome_context_menu/workflows/Flutter%20CI/badge.svg)](https://github.com/sequ3l/flutter_awesome_context_menu/actions)
 [![Likes](https://img.shields.io/pub/likes/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
 [![Popularity](https://img.shields.io/pub/popularity/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
 [![Points](https://img.shields.io/pub/points/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
