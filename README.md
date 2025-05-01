@@ -11,10 +11,6 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/to/develop-packages).
 -->
 
-[![Build Status](https://github.com/sequ3l/flutter_awesome_context_menu/workflows/Flutter%20CI/badge.svg)](https://github.com/sequ3l/flutter_awesome_context_menu/actions)
-[![Likes](https://img.shields.io/pub/likes/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
-[![Points](https://img.shields.io/pub/points/flutter_awesome_context_menu?style=flat-square)](https://pub.dev/packages/flutter_awesome_context_menu/score)
-
 # Flutter Awesome Context Menu
 
 [![Pub Version](https://img.shields.io/pub/v/flutter_awesome_context_menu.svg)](https://pub.dev/packages/flutter_awesome_context_menu)
@@ -22,13 +18,13 @@ and the Flutter guide for
 [![Platform Support](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/sequ3l/flutter_awesome_context_menu)
 [![Star on GitHub](https://img.shields.io/github/stars/sequ3l/flutter_awesome_context_menu.svg?style=flat&logo=github&colorB=deeppink&label=stars)](https://github.com/sequ3l/flutter_awesome_context_menu)
 
-[**Live Demo**](https://sequ3l.github.io/flutter_awesome_context_menu_examples/) - Try the package in your browser
-
 A Flutter package that provides a browser-like right-click context menu for your Flutter applications. This package makes it easy to add context menu functionality similar to what you'd find in web browsers when right-clicking on links, as well as create fully custom context menus for any widget.
+
+[**Live Demo**](https://sequ3l.github.io/flutter_awesome_context_menu_examples/) - Try the package in your browser
 
 ## AI-Assisted Development
 
-This package was created through a combination of developer expertise and AI-powered collaborative development using GitHub Copilot in Agent mode with Anthropic's Claude 3.7 Sonnet model. What would typically require weeks or even a month of traditional development was completed in approximately 12 hours through rapid application development techniques.
+This package was created through a combination of developer expertise and AI-powered collaborative development using GitHub Copilot in Agent mode with Anthropic's Claude 3.7 Sonnet model. What would typically require weeks or even a month of traditional development was completed in approximately a day through rapid application development techniques.
 
 For those interested in the technical details:
 - 📋 [**ANALYSIS.md**](ANALYSIS.md) provides a comprehensive breakdown of the project architecture, components, and features

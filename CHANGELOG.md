@@ -1,3 +1,8 @@
+## 0.0.5
+
+* Documentation improvements:
+  * Fixed README.md errors
+
 ## 0.0.4
 
 * Added comprehensive project documentation:
