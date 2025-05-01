@@ -77,16 +77,7 @@ A Flutter package that provides a browser-like right-click context menu for your
 
 ## Flutter Compatibility
 
-This package is compatible with Flutter 3.3.0 and later versions. It has been tested with:
-
-- Flutter 3.3.x
-- Flutter 3.7.x
-- Flutter 3.10.x
-- Flutter 3.16.x
-- Flutter 3.19.x
-- Flutter 3.22.x and above
-
-The package uses standard Flutter APIs for mouse/touch event handling, overlay management, and widget composition that have remained stable across these Flutter versions.
+This package is compatible with Flutter 3.x and later versions. The package uses standard Flutter APIs for mouse/touch event handling, overlay management, and widget composition that have remained stable across these Flutter versions.
 
 ## Features
 
