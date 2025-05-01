@@ -1,0 +1,66 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
+import 'awesome_context_menu_item.dart';
+
+/// Utility class to handle platform-specific logic and operations
+class AwesomePlatformUtils {
+  /// Determines whether the current platform should use hover for submenus.
+  static bool get isHoverPlatform {
+    if (kIsWeb) return true;
+
+    try {
+      return Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+    } catch (e) {
+      return false; // Default to false if Platform is not available
+    }
+  }
+
+  /// Returns whether the app is running on a mobile platform (iOS or Android)
+  static bool isMobile() {
+    if (kIsWeb) return false;
+
+    try {
+      return Platform.isAndroid || Platform.isIOS;
+    } catch (e) {
+      return false; // Default to desktop/web if Platform is not available
+    }
+  }
+
+  /// Returns whether the app is running on a desktop platform (Windows, macOS, or Linux)
+  static bool isDesktop() {
+    if (kIsWeb) return false;
+
+    try {
+      return Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+    } catch (e) {
+      return false; // Default to false if Platform is not available
+    }
+  }
+
+  /// Returns whether the app is running on the web platform
+  static bool isWeb() {
+    return kIsWeb;
+  }
+
+  /// Returns the current platform as a user-friendly string
+  static String getCurrentPlatform() {
+    if (kIsWeb) return 'web';
+
+    try {
+      if (Platform.isAndroid) return 'android';
+      if (Platform.isIOS) return 'ios';
+      if (Platform.isWindows) return 'windows';
+      if (Platform.isMacOS) return 'macos';
+      if (Platform.isLinux) return 'linux';
+      if (Platform.isFuchsia) return 'fuchsia';
+      return 'unknown';
+    } catch (e) {
+      return 'unknown';
+    }
+  }
+
+  /// Get the appropriate submenu interaction mode for the current platform.
+  static SubMenuInteractionMode getPlatformDefaultInteractionMode() {
+    return isHoverPlatform ? SubMenuInteractionMode.hover : SubMenuInteractionMode.click;
+  }
+}
