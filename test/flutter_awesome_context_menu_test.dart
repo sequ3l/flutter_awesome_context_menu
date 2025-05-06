@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart'; // Added import for PointerDeviceKind
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_awesome_context_menu/flutter_awesome_context_menu.dart';
 
@@ -210,7 +210,6 @@ void main() {
   });
 
   group('AwesomeContextMenu Tests', () {
-    // These tests are more limited since we can't easily test overlay behavior in widget tests
     test('AwesomeContextMenu animation duration can be configured', () {
       // Default duration
       expect(AwesomeContextMenu.getAnimationDuration().inMilliseconds, 150);
@@ -223,6 +222,304 @@ void main() {
 
       // Reset to default for other tests
       AwesomeContextMenu.setAnimationDuration(const Duration(milliseconds: 150));
+    });
+
+    test('AwesomeContextMenu platform default interaction mode', () {
+      // Get default interaction mode
+      final mode = AwesomeContextMenu.getPlatformDefaultInteractionMode();
+      // Should return a valid interaction mode
+      expect(mode, isA<SubMenuInteractionMode>());
+    });
+  });
+
+  group('Platform Utils Tests', () {
+    test('AwesomePlatformUtils provides platform information', () {
+      // These are static methods that return platform-specific information
+      expect(AwesomePlatformUtils.getCurrentPlatform(), isA<String>());
+      expect(AwesomePlatformUtils.isWeb(), isA<bool>());
+      expect(AwesomePlatformUtils.isDesktop(), isA<bool>());
+      expect(AwesomePlatformUtils.isMobile(), isA<bool>());
+      expect(AwesomePlatformUtils.isHoverPlatform, isA<bool>());
+      expect(AwesomePlatformUtils.getPlatformDefaultInteractionMode(), isA<SubMenuInteractionMode>());
+    });
+  });
+
+  group('Hierarchical Menu Structure Tests', () {
+    test('AwesomeContextMenuItem properly represents hierarchical structure', () {
+      const parentItem = AwesomeContextMenuItem(
+        label: 'Parent Menu',
+        icon: Icons.folder,
+        children: [
+          AwesomeContextMenuItem(
+            label: 'Child Item 1',
+            icon: Icons.description,
+          ),
+          AwesomeContextMenuItem(
+            label: 'Child Item 2',
+            icon: Icons.image,
+            children: [
+              AwesomeContextMenuItem(
+                label: 'Grandchild Item',
+                icon: Icons.photo,
+              ),
+            ],
+          ),
+        ],
+      );
+
+      // Verify hierarchical structure
+      expect(parentItem.hasSubmenu, isTrue);
+      expect(parentItem.children, hasLength(2));
+      expect(parentItem.children![0].label, 'Child Item 1');
+      expect(parentItem.children![1].hasSubmenu, isTrue);
+      expect(parentItem.children![1].children![0].label, 'Grandchild Item');
+    });
+
+    test('SubMenuInteractionMode values are defined correctly', () {
+      // Verify all modes are available
+      expect(SubMenuInteractionMode.auto, isNotNull);
+      expect(SubMenuInteractionMode.hover, isNotNull);
+      expect(SubMenuInteractionMode.click, isNotNull);
+      expect(SubMenuInteractionMode.longPress, isNotNull);
+    });
+  });
+
+  group('Menu Item Properties Tests', () {
+    test('AwesomeContextMenuItem properly handles keyboard shortcuts', () {
+      const item = AwesomeContextMenuItem(
+        label: 'Copy',
+        icon: Icons.content_copy,
+        shortcut: 'Ctrl+C',
+      );
+
+      expect(item.shortcut, 'Ctrl+C');
+    });
+
+    test('AwesomeContextMenuItem handles dismissMenuOnSelect property', () {
+      const itemDismiss = AwesomeContextMenuItem(
+        label: 'Normal Item',
+        dismissMenuOnSelect: true,
+      );
+
+      const itemPersistent = AwesomeContextMenuItem(
+        label: 'Persistent Item',
+        dismissMenuOnSelect: false,
+      );
+
+      expect(itemDismiss.dismissMenuOnSelect, isTrue);
+      expect(itemPersistent.dismissMenuOnSelect, isFalse);
+    });
+
+    test('AwesomeContextMenuItem handles enabled state', () {
+      const enabledItem = AwesomeContextMenuItem(
+        label: 'Enabled Item',
+        enabled: true,
+      );
+
+      const disabledItem = AwesomeContextMenuItem(
+        label: 'Disabled Item',
+        enabled: false,
+      );
+
+      expect(enabledItem.enabled, isTrue);
+      expect(disabledItem.enabled, isFalse);
+    });
+  });
+
+  group('AwesomeContextMenuArea Configuration Tests', () {
+    test('AwesomeContextMenuArea accepts all configuration properties', () {
+      final widget = AwesomeContextMenuArea(
+        link: 'https://flutter.dev',
+        menuItems: [
+          AwesomeContextMenuItem(label: 'Test Item'),
+        ],
+        showDefaultLinkItems: true,
+        handleCtrlClick: true,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        maxMenuWidth: 300,
+        animationDuration: const Duration(milliseconds: 200),
+        shortcutLabel: 'Right-click',
+        child: const Text('Test Widget'),
+      );
+
+      // Verify that all properties are accepted without errors
+      expect(widget.link, 'https://flutter.dev');
+      expect(widget.menuItems, isNotNull);
+      expect(widget.menuItems!.length, 1);
+      expect(widget.showDefaultLinkItems, isTrue);
+      expect(widget.handleCtrlClick, isTrue);
+      expect(widget.backgroundColor, Colors.black);
+      expect(widget.textColor, Colors.white);
+      expect(widget.maxMenuWidth, 300);
+      expect(widget.animationDuration, const Duration(milliseconds: 200));
+      expect(widget.shortcutLabel, 'Right-click');
+    });
+  });
+
+  group('Dynamic Menu Generation Tests', () {
+    testWidgets('menuItemBuilder generates items dynamically', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (BuildContext context) {
+              return Scaffold(
+                body: AwesomeContextMenuArea(
+                  menuItemBuilder: (context) {
+                    return [
+                      AwesomeContextMenuItem(
+                        label: 'Dynamic Item',
+                        icon: Icons.refresh,
+                      ),
+                    ];
+                  },
+                  child: const Text('Dynamic Menu Test'),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+      // Verify widget built successfully
+      expect(find.text('Dynamic Menu Test'), findsOneWidget);
+
+      // Access the AwesomeContextMenuArea to verify menuItemBuilder
+      final finder = find.byType(AwesomeContextMenuArea);
+      expect(finder, findsOneWidget);
+
+      final widget = tester.widget<AwesomeContextMenuArea>(finder);
+      expect(widget.menuItemBuilder, isNotNull);
+    });
+  });
+
+  group('Custom Builder Tests', () {
+    testWidgets('customMenuBuilder is properly configured', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AwesomeContextMenuArea(
+              useCustomBuilder: true,
+              customMenuBuilder: (context, closeMenu) {
+                return Container(
+                  color: Colors.blue,
+                  child: const Text('Custom Menu'),
+                );
+              },
+              child: const Text('Custom Builder Test'),
+            ),
+          ),
+        ),
+      );
+
+      // Verify widget built successfully
+      expect(find.text('Custom Builder Test'), findsOneWidget);
+
+      // Verify custom builder properties
+      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      expect(widget.useCustomBuilder, isTrue);
+      expect(widget.customMenuBuilder, isNotNull);
+    });
+  });
+
+  group('Menu Styling Tests', () {
+    testWidgets('styling properties are properly configured', (tester) async {
+      final customColor = Colors.purple[900]!;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AwesomeContextMenuArea(
+              backgroundColor: customColor,
+              textColor: Colors.white,
+              maxMenuWidth: 300,
+              menuItems: [AwesomeContextMenuItem(label: 'Styled Item')],
+              child: const Text('Styled Menu Test'),
+            ),
+          ),
+        ),
+      );
+
+      // Verify widget built successfully
+      expect(find.text('Styled Menu Test'), findsOneWidget);
+
+      // Verify styling properties
+      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      expect(widget.backgroundColor, customColor);
+      expect(widget.textColor, Colors.white);
+      expect(widget.maxMenuWidth, 300);
+    });
+  });
+
+  group('Mouse Event Handlers Tests', () {
+    testWidgets('mouse event handlers are properly configured', (tester) async {
+      bool onRightClickCalled = false;
+      bool onClickCalled = false;
+      bool onMouseEnterCalled = false;
+      bool onMouseExitCalled = false;
+      bool onMouseHoverCalled = false;
+      bool onMouseMoveCalled = false;
+      bool onCtrlClickCalled = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AwesomeContextMenuArea(
+              onRightClick: (_) => onRightClickCalled = true,
+              onClick: () => onClickCalled = true,
+              onMouseEnter: (_) => onMouseEnterCalled = true,
+              onMouseExit: (_) => onMouseExitCalled = true,
+              onMouseHover: (_) => onMouseHoverCalled = true,
+              onMouseMove: (_) => onMouseMoveCalled = true,
+              onCtrlClick: () => onCtrlClickCalled = true,
+              child: const Text('Event Handlers Test'),
+            ),
+          ),
+        ),
+      );
+
+      // Verify widget built successfully
+      expect(find.text('Event Handlers Test'), findsOneWidget);
+
+      // Verify handlers are configured
+      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      expect(widget.onRightClick, isNotNull);
+      expect(widget.onClick, isNotNull);
+      expect(widget.onMouseEnter, isNotNull);
+      expect(widget.onMouseExit, isNotNull);
+      expect(widget.onMouseHover, isNotNull);
+      expect(widget.onMouseMove, isNotNull);
+      expect(widget.onCtrlClick, isNotNull);
+
+      // Test basic click handling (one that's reliable in widget tests)
+      await tester.tap(find.text('Event Handlers Test'));
+      await tester.pump();
+      expect(onClickCalled, isTrue);
+    });
+  });
+
+  group('Custom Position Callback Tests', () {
+    testWidgets('customPositionCallback is properly configured', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AwesomeContextMenuArea(
+              customPositionCallback: (rect, menuSize) {
+                return rect.topRight;
+              },
+              menuItems: [AwesomeContextMenuItem(label: 'Positioned Item')],
+              child: const Text('Custom Position Test'),
+            ),
+          ),
+        ),
+      );
+
+      // Verify widget built successfully
+      expect(find.text('Custom Position Test'), findsOneWidget);
+
+      // Verify custom position callback is configured
+      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      expect(widget.customPositionCallback, isNotNull);
     });
   });
 }

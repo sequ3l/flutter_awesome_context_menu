@@ -1,3 +1,22 @@
+## 0.0.7
+
+* Enhanced test suite:
+  * Added comprehensive widget tests for AwesomeContextMenuArea rendering and behavior
+  * Implemented unit tests for AwesomeContextMenuItem construction and properties
+  * Added tests for AwesomeLinkHandler URL validation
+  * Improved test coverage for AwesomeMenuItemCache functionality and LRU behavior
+  * Added tests for hierarchical menu structures and SubMenuInteractionMode
+  * Implemented mouse event handler tests for hover, click, and pointer events
+  * Added tests for custom styling, positioning, and builder configurations
+  * Included tests for keyboard shortcuts and persistent menu items
+
+* Documentation improvements:
+  * Added detailed example project README.md
+  * Updated project demo website references
+  * Improved API documentation with more code examples
+  * Enhanced readability of implementation docs
+  * Fixed typos and formatting issues in existing documentation
+
 ## 0.0.6
 
 * Fixed context menu flickering issue:
@@ -6,7 +25,7 @@
   * Removed duplicate event handling by consolidating into a single event handler
   * Added delayed show/hide sequence to improve menu transition experience
   * Extended event handling timeout for better stability
-  * Fixed minor documentation inconsitencies
+  * Fixed minor documentation inconsistencies
 
 ## 0.0.5
 

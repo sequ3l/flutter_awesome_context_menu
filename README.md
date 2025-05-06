@@ -13,6 +13,7 @@ and the Flutter guide for
 
 # Flutter Awesome Context Menu
 
+[![Dart](https://github.com/sequ3l/flutter_awesome_context_menu/actions/workflows/dart.yml/badge.svg)](https://github.com/sequ3l/flutter_awesome_context_menu/actions/workflows/dart.yml)
 [![Pub Version](https://img.shields.io/pub/v/flutter_awesome_context_menu.svg)](https://pub.dev/packages/flutter_awesome_context_menu)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Platform Support](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-blue.svg)](https://github.com/sequ3l/flutter_awesome_context_menu)
