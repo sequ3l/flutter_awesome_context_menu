@@ -34,6 +34,7 @@ This is the main widget that wraps content with context menu functionality. It d
 - Mouse event handling (enter, exit, hover, move)
 - CTRL+Click support for links
 - Custom positioning of menus
+- Optimized event handling with timestamp throttling to prevent flickering
 
 ### AwesomeContextMenuItem
 Represents individual menu items within the context menu. Features include:
@@ -75,6 +76,8 @@ Core utility class for programmatically showing, updating, and hiding context me
 ### Performance Optimizations
 - Menu item caching to improve performance
 - Efficient overlay management
+- Timestamp-based event throttling to prevent duplicate context menu events
+- Smart delay sequencing for menu hide/show operations
 
 ## Integration Points
 The package integrates with:
@@ -97,7 +100,8 @@ The package is designed with extensibility in mind:
 - **url_launcher**: For handling URL operations
 
 ## Version History
-Currently at version 0.0.4, with updates focusing on:
+Currently at version 0.0.6, with updates focusing on:
+- Context menu stability and visual improvements
 - Documentation improvements and correctness
 - Web platform compatibility improvements
 - Platform detection refinements

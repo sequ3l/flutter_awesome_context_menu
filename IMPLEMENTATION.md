@@ -33,21 +33,47 @@ The Flutter Awesome Context Menu package uses a layered architecture that separa
 ### Event Handling & Detection
 
 ```dart
-// Simplified event detection in AwesomeContextMenuArea
+// Optimized event detection in AwesomeContextMenuArea
 Widget build(BuildContext context) {
   return Listener(
     onPointerDown: (event) {
-      // Detect right click (or long press on mobile)
+      // Detect right click with timestamp throttling to prevent flickering
       if (event.kind == PointerDeviceKind.mouse && 
           event.buttons == kSecondaryMouseButton) {
-        _showContextMenu(context, event.position);
+        // Use timestamp to prevent handling multiple events in rapid succession
+        final int now = DateTime.now().millisecondsSinceEpoch;
+        if (now - _lastRightClickTimestamp < 200) {
+          // Ignore events that are too close together
+          return;
+        }
+        _lastRightClickTimestamp = now;
+        
+        // Only show menu if not already handled by a child widget
+        if (!_isContextMenuEventHandled) {
+          _isContextMenuEventHandled = true;
+          
+          // Sequential hide/show with delay to prevent visual glitches
+          if (AwesomeContextMenu.isVisible()) {
+            AwesomeContextMenu.hide();
+            Future.delayed(const Duration(milliseconds: 50), () {
+              _showContextMenu(event.position);
+            });
+          } else {
+            _showContextMenu(event.position);
+          }
+          
+          // Reset the handled flag after a delay
+          Future.delayed(const Duration(milliseconds: 300), () {
+            _isContextMenuEventHandled = false;
+          });
+        }
       }
     },
     child: GestureDetector(
       onLongPress: () {
         // For mobile platforms
         if (AwesomePlatformUtils.isMobile()) {
-          _showContextMenu(context, _getPosition());
+          _showContextMenu(_getPosition());
         }
       },
       child: child,
@@ -55,6 +81,13 @@ Widget build(BuildContext context) {
   );
 }
 ```
+
+This implementation includes several optimizations to prevent context menu flickering:
+
+1. **Timestamp-based throttling**: Prevents multiple rapid-fire events from being processed
+2. **Single event handler**: Uses only `onPointerDown` for right-click detection rather than both `onPointerDown` and `onSecondaryTapUp`
+3. **Delayed hide/show sequence**: When replacing an existing menu, adds a small delay between hiding and showing for smooth transitions
+4. **Extended timeout**: Increases the event handling timeout to ensure stable behavior between interactions
 
 ### Platform-Specific Code Handling
 
@@ -311,6 +344,42 @@ For mobile platforms:
 - Long-press replaces right-click as the trigger mechanism
 - Touch-friendly hit areas ensure usability on small screens
 - Interaction modes are adjusted to favor taps over hovers
+
+```dart
+// Mobile support implementation 
+// In AwesomeContextMenuArea build method
+Widget build(BuildContext context) {
+  // ...existing code...
+  return Listener(
+    // ...existing code...
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      // Long press gesture for mobile platforms
+      onLongPress: () {
+        // Only trigger on mobile platforms
+        if (AwesomePlatformUtils.isMobile()) {
+          // Ensure we don't have an existing menu already
+          if (local.AwesomeContextMenu.isVisible()) {
+            local.AwesomeContextMenu.hide();
+          }
+          
+          // Get position from the current render object
+          final RenderBox box = context.findRenderObject() as RenderBox;
+          final Offset position = box.localToGlobal(
+            box.size.center(Offset.zero) // Center of the widget
+          );
+          
+          // Show the context menu at this position
+          _showContextMenu(position);
+        }
+      },
+      // ...existing code...
+    ),
+  );
+}
+```
+
+This implementation ensures a seamless experience across platforms, with mobile users accessing the same context menu functionality through a familiar long-press gesture instead of right-click.
 
 ### Desktop Optimization
 

@@ -1,7 +1,7 @@
 name: flutter_awesome_context_menu_examples
 description: "A Flutter package that provides a customizable context menu for Flutter applications. This example demonstrates how to use the flutter_awesome_context_menu package."
 publish_to: 'none' #Remove this line if you wish to publish to pub.dev
-version: 0.0.5
+version: 0.0.6
 
 environment:
   sdk: ">=2.17.0 <4.0.0"

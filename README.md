@@ -68,7 +68,7 @@ This project demonstrates how modern AI tools can dramatically accelerate the de
   - [File Context Menu](#file-context-menu)
 - [API Reference](#api-reference)
   - [AwesomeContextMenuArea](#awesomecontextmenuarea)
-  - [ContextMenuItem](#contextmenuitem)
+  - [AwesomeContextMenuItem](#awesomecontextmenuitem)
   - [SubMenuInteractionMode](#submenuinteractionmode)
   - [LinkHandler](#linkhandler)
   - [PlatformUtils](#platformutils)
@@ -100,6 +100,7 @@ This package is compatible with Flutter 3.x and later versions. The package uses
 - 🎭 Theme-aware styling that adapts to your app's theme
 - 📊 Custom positioning to control where menus appear
 - ⚡ Customizable animation settings
+- 🛠️ Optimized event handling to prevent menu flickering
 
 ## Installation
 
@@ -107,7 +108,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_awesome_context_menu: ^0.0.1
+  flutter_awesome_context_menu: ^0.0.6
 ```
 
 Or, if you want to use the latest development version:
@@ -125,13 +126,37 @@ This package requires the `url_launcher` package to handle link operations. If y
 
 ```yaml
 dependencies:
-  flutter_awesome_context_menu: ^0.0.1
+  flutter_awesome_context_menu: ^0.0.6
   url_launcher: ^6.3.1 # Already included as a dependency of this package
 ```
 
 #### Web Platform Setup
 
-For web applications, no additional setup is required.
+For web applications, no additional setup is required for basic functionality. However, for the best experience, you should disable the browser's default context menu to prevent conflicts with the Flutter Awesome Context Menu.
+
+Add the following to your `index.html` file (typically located in your project's `web` folder):
+
+```html
+<style>
+  /* Prevent text selection on double-click */
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+</style>
+  
+<script>
+  // Disable the browser's default context menu
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  });
+</script>
+```
+
+This code prevents the browser's native context menu from appearing when a user right-clicks, allowing your Flutter Awesome Context Menu to work as intended. The CSS also prevents text selection on double-click, which can improve the user experience on web platforms.
 
 #### Android Setup
 
@@ -471,7 +496,7 @@ AwesomeContextMenuArea(
   backgroundColor: isDark ? theme.colorScheme.surfaceVariant : null,
   textColor: isDark ? theme.colorScheme.onSurfaceVariant : null,
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Current theme: ${isDark ? "Dark" : "Light"}',
       icon: isDark ? Icons.dark_mode : Icons.light_mode,
     ),
@@ -548,9 +573,9 @@ AwesomeContextMenuArea(
 Improve performance by caching frequently used menu items:
 
 ```dart
-ContextMenuItem.getCachedItem(
+AwesomeContextMenuItem.getCachedItem(
   'edit',  // Cache key
-  () => ContextMenuItem(
+  () => AwesomeContextMenuItem(
     label: 'Edit',
     icon: Icons.edit,
     onSelected: () => print('Edit action'),
@@ -649,13 +674,13 @@ Display keyboard shortcuts alongside menu items:
 ```dart
 AwesomeContextMenuArea(
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Copy',
       icon: Icons.content_copy,
       shortcut: 'Ctrl+C',
       onSelected: () {},
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Paste',
       icon: Icons.content_paste,
       shortcut: 'Ctrl+V',
@@ -677,12 +702,12 @@ final SubMenuInteractionMode defaultMode = AwesomeContextMenu.getPlatformDefault
 
 AwesomeContextMenuArea(
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: isMobile ? 'Mobile Action' : 'Desktop Action',
       icon: isMobile ? Icons.smartphone : Icons.desktop_windows,
       onSelected: () {},
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Platform Submenu',
       subMenuInteractionMode: defaultMode, // Platform-specific interaction
       children: [...],
@@ -703,7 +728,7 @@ void showMyContextMenu(BuildContext context, Offset position) {
   AwesomeContextMenu.show(
     context: context,
     items: [
-      ContextMenuItem(
+      AwesomeContextMenuItem(
         label: 'Custom Action',
         icon: Icons.star,
         onSelected: () {
@@ -719,7 +744,7 @@ void showMyContextMenu(BuildContext context, Offset position) {
 // To update the menu items of a currently visible menu:
 void updateCurrentMenu() {
   AwesomeContextMenu.updateItems([
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Updated Item',
       icon: Icons.refresh,
       onSelected: () {},
@@ -747,14 +772,14 @@ SelectableText(
     return AwesomeContextMenuArea(
       menuItems: [
         if (selectedText.isNotEmpty) ...[
-          ContextMenuItem(
+          AwesomeContextMenuItem(
             label: 'Copy',
             icon: Icons.copy,
             onSelected: () {
               Clipboard.setData(ClipboardData(text: selectedText));
             },
           ),
-          ContextMenuItem(
+          AwesomeContextMenuItem(
             label: 'Search for "$selectedText"',
             icon: Icons.search,
             onSelected: () {
@@ -791,21 +816,21 @@ SelectableText(
 ```dart
 AwesomeContextMenuArea(
   menuItems: [
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'View Image',
       icon: Icons.image,
       onSelected: () {
         // Open image in full-screen viewer
       },
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Save Image',
       icon: Icons.download,
       onSelected: () {
         // Save the image
       },
     ),
-    ContextMenuItem(
+    AwesomeContextMenuItem(
       label: 'Copy Image',
       icon: Icons.content_copy,
       onSelected: () {
@@ -825,12 +850,12 @@ AwesomeContextMenuArea(
     // You can dynamically build menu items based on current state
     if (isDirectory) {
       return [
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Open Folder',
           icon: Icons.folder_open,
           onSelected: () => openFolder(path),
         ),
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'New File',
           icon: Icons.add,
           onSelected: () => createNewFile(path),
@@ -838,12 +863,12 @@ AwesomeContextMenuArea(
       ];
     } else {
       return [
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Open File',
           icon: Icons.description,
           onSelected: () => openFile(path),
         ),
-        ContextMenuItem(
+        AwesomeContextMenuItem(
           label: 'Delete',
           icon: Icons.delete,
           onSelected: () => deleteFile(path),
@@ -867,7 +892,7 @@ Main widget to wrap content with context menu functionality.
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `child` | `Widget` | The widget to wrap with context menu functionality |
-| `menuItems` | `List<ContextMenuItem>?` | List of custom menu items to show |
+| `menuItems` | `List<AwesomeContextMenuItem>?` | List of custom menu items to show |
 | `link` | `String?` | URL to associate with this area |
 | `onRightClick` | `void Function(Offset)?` | Callback when right-click occurs |
 | `onClick` | `VoidCallback?` | Callback when normal click occurs |
@@ -878,7 +903,7 @@ Main widget to wrap content with context menu functionality.
 | `showDefaultLinkItems` | `bool` | Whether to show default browser link menu items |
 | `handleCtrlClick` | `bool` | Whether to handle CTRL+Click to open links in new tabs |
 | `onCtrlClick` | `VoidCallback?` | Callback when CTRL+Click occurs on a link |
-| `menuItemBuilder` | `List<ContextMenuItem> Function(BuildContext)?` | Dynamic menu item builder |
+| `menuItemBuilder` | `List<AwesomeContextMenuItem> Function(BuildContext)?` | Dynamic menu item builder |
 | `maxMenuWidth` | `double` | Maximum width of the context menu |
 | `backgroundColor` | `Color?` | Background color of the context menu |
 | `textColor` | `Color?` | Text color of the context menu items |
@@ -888,7 +913,7 @@ Main widget to wrap content with context menu functionality.
 | `customMenuBuilder` | `Widget Function(BuildContext, VoidCallback)?` | Builder for custom menu UI |
 | `shortcutLabel` | `String?` | Text label for interaction hint (e.g., "Right-click") |
 
-### ContextMenuItem
+### AwesomeContextMenuItem
 
 Represents an individual menu item in the context menu.
 
@@ -900,7 +925,7 @@ Represents an individual menu item in the context menu.
 | `enabled` | `bool` | Whether the menu item is enabled |
 | `isSeparator` | `bool` | Whether this item is a separator line |
 | `dismissMenuOnSelect` | `bool` | Whether to dismiss the menu when this item is selected |
-| `children` | `List<ContextMenuItem>?` | Child menu items for hierarchical menus |
+| `children` | `List<AwesomeContextMenuItem>?` | Child menu items for hierarchical menus |
 | `subMenuInteractionMode` | `SubMenuInteractionMode` | How to reveal the submenu (hover, click, long press) |
 | `shortcut` | `String?` | Text representing a keyboard shortcut |
 
@@ -931,6 +956,7 @@ Utility class for platform detection and adaptation.
 
 | Method | Parameters | Description |
 |--------|------------|-------------|
+| `isHoverPlatform` | - | Returns true if running on a platform that supports hover interactions (desktop or web) |
 | `isMobile` | - | Returns true if running on a mobile platform |
 | `isDesktop` | - | Returns true if running on a desktop platform |
 | `isWeb` | - | Returns true if running on the web |
@@ -944,7 +970,7 @@ Utility class for caching frequently used menu items and icons.
 | Method | Parameters | Description |
 |--------|------------|-------------|
 | `getCachedItem` | `String key` | Retrieves a cached menu item by key |
-| `storeItem` | `String key, ContextMenuItem item` | Stores a menu item in the cache |
+| `storeItem` | `String key, AwesomeContextMenuItem item` | Stores a menu item in the cache |
 | `getItem` | Various parameters for creating a menu item | Creates or retrieves a cached menu item |
 | `getIcon` | `IconData iconData, [Color? color], [double size]` | Creates or retrieves a cached icon |
 | `clearCache` | - | Clears all cached items and icons |

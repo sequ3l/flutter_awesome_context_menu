@@ -136,6 +136,9 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
   List<AwesomeContextMenuItem>? _cachedMenuItems;
   String? _lastCachedLink;
 
+  // Store last event timestamp to prevent duplicate handling
+  int _lastRightClickTimestamp = 0;
+
   @override
   void didUpdateWidget(AwesomeContextMenuArea oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -195,20 +198,33 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
           onPointerDown: (PointerDownEvent event) {
             // Handle right-click on web and other platforms
             if (event.kind == PointerDeviceKind.mouse && event.buttons == kSecondaryMouseButton) {
+              // Use timestamp to prevent handling multiple events in rapid succession
+              final int now = DateTime.now().millisecondsSinceEpoch;
+              if (now - _lastRightClickTimestamp < 200) {
+                // Ignore events that are too close together
+                return;
+              }
+              _lastRightClickTimestamp = now;
+
               // Check if this right-click is a brand new click (not bubbled from a child)
-              // Only the first widget to receive the event will show its menu
               if (!_isContextMenuEventHandled) {
                 _isContextMenuEventHandled = true;
 
                 // Only hide if a menu is actually visible
                 if (local.AwesomeContextMenu.isVisible()) {
                   local.AwesomeContextMenu.hide();
+
+                  // Add a small delay before showing the new menu to prevent visual glitches
+                  Future.delayed(const Duration(milliseconds: 50), () {
+                    _showContextMenu(event.position);
+                  });
+                } else {
+                  _showContextMenu(event.position);
                 }
-                _showContextMenu(event.position);
 
                 // Clear the handled flag after a short delay
                 // This prevents immediate bubbling but allows new right-clicks
-                Future.delayed(const Duration(milliseconds: 100), () {
+                Future.delayed(const Duration(milliseconds: 300), () {
                   _isContextMenuEventHandled = false;
                 });
               }
@@ -222,23 +238,7 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
           behavior: HitTestBehavior.opaque, // This prevents events from propagating to parent widgets
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onSecondaryTapUp: (TapUpDetails details) {
-              // Only respond if this tap hasn't been handled by a child
-              if (!_isContextMenuEventHandled) {
-                _isContextMenuEventHandled = true;
-
-                // Only hide if a menu is actually visible
-                if (local.AwesomeContextMenu.isVisible()) {
-                  local.AwesomeContextMenu.hide();
-                }
-                _showContextMenu(details.globalPosition);
-
-                // Reset the flag after a short delay
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  _isContextMenuEventHandled = false;
-                });
-              }
-            },
+            // Remove the onSecondaryTapUp handler to avoid duplicate handling
             onTap: () {
               // Handle onClick callback if provided
               widget.onClick?.call();

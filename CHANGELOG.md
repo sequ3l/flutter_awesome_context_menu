@@ -1,3 +1,13 @@
+## 0.0.6
+
+* Fixed context menu flickering issue:
+  * Resolved issue where menus would rapidly show, hide, then show again on right-click
+  * Implemented timestamp-based event throttling to prevent duplicate events
+  * Removed duplicate event handling by consolidating into a single event handler
+  * Added delayed show/hide sequence to improve menu transition experience
+  * Extended event handling timeout for better stability
+  * Fixed minor documentation inconsitencies
+
 ## 0.0.5
 
 * Documentation improvements:
