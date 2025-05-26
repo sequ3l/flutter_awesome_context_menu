@@ -22,12 +22,14 @@ class Example4DynamicMenu extends StatelessWidget {
         menuItemBuilder: (context) {
           return [
             AwesomeContextMenuItem(
-              label: 'Generated at ${DateTime.now().toString().substring(11, 19)}',
+              label:
+                  'Generated at ${DateTime.now().toString().substring(11, 19)}',
               icon: Icons.access_time,
               onSelected: () => updateAction('Time item selected'),
             ),
             AwesomeContextMenuItem(
-              label: 'Width: ${MediaQuery.of(context).size.width.toStringAsFixed(0)}px',
+              label:
+                  'Width: ${MediaQuery.of(context).size.width.toStringAsFixed(0)}px',
               icon: Icons.aspect_ratio,
               onSelected: () => updateAction('Screen size item selected'),
             ),

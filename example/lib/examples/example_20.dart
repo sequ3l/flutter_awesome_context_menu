@@ -56,7 +56,8 @@ class Example20KeyboardShortcuts extends StatelessWidget {
               SizedBox(width: 8),
               Text(
                 'Menu with Shortcuts',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
               ),
             ],
           ),

@@ -13,10 +13,12 @@ class Example11NestedContextMenus extends StatefulWidget {
   });
 
   @override
-  State<Example11NestedContextMenus> createState() => _Example11NestedContextMenusState();
+  State<Example11NestedContextMenus> createState() =>
+      _Example11NestedContextMenusState();
 }
 
-class _Example11NestedContextMenusState extends State<Example11NestedContextMenus> {
+class _Example11NestedContextMenusState
+    extends State<Example11NestedContextMenus> {
   // State variables to track which menu was last activated
   String _lastActivatedMenu = "None";
   Color _parentAreaColor = Colors.blue.withOpacity(0.1);
@@ -69,8 +71,11 @@ class _Example11NestedContextMenusState extends State<Example11NestedContextMenu
               ),
             ],
             child: Container(
-              constraints: const BoxConstraints(minHeight: 180, maxHeight: 220), // Use constraints instead of fixed height
-              padding: const EdgeInsets.all(12), // Reduced padding to save space
+              constraints: const BoxConstraints(
+                  minHeight: 180,
+                  maxHeight: 220), // Use constraints instead of fixed height
+              padding:
+                  const EdgeInsets.all(12), // Reduced padding to save space
               decoration: BoxDecoration(
                 color: _parentAreaColor,
                 borderRadius: BorderRadius.circular(8),
@@ -170,11 +175,15 @@ class _Example11NestedContextMenusState extends State<Example11NestedContextMenu
                   const SizedBox(height: 12), // Reduced spacing
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
                     decoration: BoxDecoration(
                       color: Colors.yellow.shade200,
                       gradient: LinearGradient(
-                        colors: [Colors.yellow.shade300, Colors.black.withOpacity(0.1)],
+                        colors: [
+                          Colors.yellow.shade300,
+                          Colors.black.withOpacity(0.1)
+                        ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -186,7 +195,9 @@ class _Example11NestedContextMenusState extends State<Example11NestedContextMenu
                           textStyle: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 11, // Reduced font size
-                            color: _lastActivatedMenu == "Child Menu" ? Colors.green.shade800 : Colors.blue.shade800,
+                            color: _lastActivatedMenu == "Child Menu"
+                                ? Colors.green.shade800
+                                : Colors.blue.shade800,
                           ),
                         ),
                       ),

@@ -14,7 +14,8 @@ class Example17PlatformAdaptive extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isMobile = AwesomePlatformUtils.isMobile();
     final String platform = AwesomePlatformUtils.getCurrentPlatform();
-    final SubMenuInteractionMode defaultMode = AwesomeContextMenu.getPlatformDefaultInteractionMode();
+    final SubMenuInteractionMode defaultMode =
+        AwesomeContextMenu.getPlatformDefaultInteractionMode();
 
     return buildExampleCard(
       title: 'Example 17: Platform Adaptive',
@@ -30,7 +31,8 @@ class Example17PlatformAdaptive extends StatelessWidget {
           AwesomeContextMenuItem(
             label: isMobile ? 'Mobile Action' : 'Desktop Action',
             icon: isMobile ? Icons.smartphone : Icons.desktop_windows,
-            onSelected: () => updateAction('${isMobile ? "Mobile" : "Desktop"} action selected'),
+            onSelected: () => updateAction(
+                '${isMobile ? "Mobile" : "Desktop"} action selected'),
           ),
           AwesomeContextMenuItem(
             label: 'Platform Submenu',
@@ -39,7 +41,8 @@ class Example17PlatformAdaptive extends StatelessWidget {
             children: [
               AwesomeContextMenuItem(
                 label: 'Submenu using $defaultMode mode',
-                onSelected: () => updateAction('Platform submenu item selected'),
+                onSelected: () =>
+                    updateAction('Platform submenu item selected'),
               ),
             ],
           ),
@@ -62,7 +65,8 @@ class Example17PlatformAdaptive extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'Platform: $platform',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w500),
               ),
             ],
           ),

@@ -47,7 +47,8 @@ class _Example8HoverEffectsState extends State<Example8HoverEffects> {
           AwesomeContextMenuItem(
             label: 'Hover example menu item',
             icon: Icons.mouse,
-            onSelected: () => widget.updateAction('Hover example menu selected'),
+            onSelected: () =>
+                widget.updateAction('Hover example menu selected'),
           ),
         ],
         child: AnimatedContainer(
@@ -55,11 +56,15 @@ class _Example8HoverEffectsState extends State<Example8HoverEffects> {
           transform: Matrix4.identity()..scale(_hoverScale),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: _hoverColor == Colors.transparent ? Colors.teal : _hoverColor,
+            color:
+                _hoverColor == Colors.transparent ? Colors.teal : _hoverColor,
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: (_hoverColor == Colors.transparent ? Colors.teal : _hoverColor).withOpacity(0.3),
+                color: (_hoverColor == Colors.transparent
+                        ? Colors.teal
+                        : _hoverColor)
+                    .withOpacity(0.3),
                 blurRadius: _hoverScale * 8,
                 offset: const Offset(0, 3),
               ),

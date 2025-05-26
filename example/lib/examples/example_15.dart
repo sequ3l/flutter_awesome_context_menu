@@ -40,7 +40,8 @@ class _Example15FormMenuState extends State<Example15FormMenu> {
                 _input = value;
               },
               onSave: () {
-                widget.updateAction('Saved: $_input, Opacity: ${(_opacity * 100).round()}%');
+                widget.updateAction(
+                    'Saved: $_input, Opacity: ${(_opacity * 100).round()}%');
                 closeMenu();
               },
               onCancel: closeMenu,
@@ -59,7 +60,8 @@ class _Example15FormMenuState extends State<Example15FormMenu> {
                 SizedBox(width: 8),
                 Text(
                   'Form Menu',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -138,7 +140,8 @@ class _CustomFormMenuState extends State<_CustomFormMenu> {
               widget.onOpacityChanged(value);
             },
           ),
-          const Text('Quick Note', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text('Quick Note',
+              style: TextStyle(fontWeight: FontWeight.bold)),
           TextField(
             controller: _textController,
             onChanged: widget.onInputChanged,

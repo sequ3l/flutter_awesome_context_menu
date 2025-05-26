@@ -11,7 +11,8 @@ class Example16MenuPositioning extends StatefulWidget {
   });
 
   @override
-  State<Example16MenuPositioning> createState() => _Example16MenuPositioningState();
+  State<Example16MenuPositioning> createState() =>
+      _Example16MenuPositioningState();
 }
 
 class _Example16MenuPositioningState extends State<Example16MenuPositioning> {
@@ -84,7 +85,8 @@ class _Example16MenuPositioningState extends State<Example16MenuPositioning> {
                     AwesomeContextMenuItem(
                       label: 'Custom positioned item',
                       icon: Icons.place,
-                      onSelected: () => widget.updateAction('Selected from custom position'),
+                      onSelected: () =>
+                          widget.updateAction('Selected from custom position'),
                     ),
                   ],
                   child: Container(
@@ -102,7 +104,8 @@ class _Example16MenuPositioningState extends State<Example16MenuPositioning> {
                     child: Center(
                       child: Text(
                         'Menu appears at $_menuAlignment',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w500),
                         textAlign: TextAlign.center,
                       ),
                     ),

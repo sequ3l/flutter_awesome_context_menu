@@ -5,6 +5,7 @@ import 'awesome_context_menu.dart' as local;
 import 'awesome_context_menu_item.dart';
 import 'awesome_link_handler.dart';
 import 'awesome_menu_item_cache.dart';
+import 'awesome_platform_utils.dart';
 
 /// A widget that provides a customizable context menu area.
 ///
@@ -59,7 +60,8 @@ class AwesomeContextMenuArea extends StatefulWidget {
 
   /// Callback to build custom menu items.
   /// Can be used to dynamically generate menu items at runtime.
-  final List<AwesomeContextMenuItem> Function(BuildContext context)? menuItemBuilder;
+  final List<AwesomeContextMenuItem> Function(BuildContext context)?
+      menuItemBuilder;
 
   /// Maximum width of the context menu.
   final double maxMenuWidth;
@@ -85,7 +87,8 @@ class AwesomeContextMenuArea extends StatefulWidget {
 
   /// Custom builder for creating completely custom menu UI.
   /// The second parameter is a callback to close the menu.
-  final Widget Function(BuildContext context, VoidCallback closeMenu)? customMenuBuilder;
+  final Widget Function(BuildContext context, VoidCallback closeMenu)?
+      customMenuBuilder;
 
   /// Optional text label to display as a hint for interacting with this area
   /// (e.g., "Right-click" or "Long-press").
@@ -144,7 +147,9 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
     super.didUpdateWidget(oldWidget);
 
     // Invalidate the cached menu items if relevant props have changed
-    if (widget.link != oldWidget.link || widget.menuItems != oldWidget.menuItems || widget.showDefaultLinkItems != oldWidget.showDefaultLinkItems) {
+    if (widget.link != oldWidget.link ||
+        widget.menuItems != oldWidget.menuItems ||
+        widget.showDefaultLinkItems != oldWidget.showDefaultLinkItems) {
       _cachedMenuItems = null;
     }
   }
@@ -167,7 +172,8 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
     return Focus(
       onKeyEvent: (FocusNode node, KeyEvent event) {
         // Track control key state
-        if (event.logicalKey == LogicalKeyboardKey.controlLeft || event.logicalKey == LogicalKeyboardKey.controlRight) {
+        if (event.logicalKey == LogicalKeyboardKey.controlLeft ||
+            event.logicalKey == LogicalKeyboardKey.controlRight) {
           if (event is KeyDownEvent) {
             setState(() => _isCtrlPressed = true);
           } else if (event is KeyUpEvent) {
@@ -197,7 +203,8 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
           },
           onPointerDown: (PointerDownEvent event) {
             // Handle right-click on web and other platforms
-            if (event.kind == PointerDeviceKind.mouse && event.buttons == kSecondaryMouseButton) {
+            if (event.kind == PointerDeviceKind.mouse &&
+                event.buttons == kSecondaryMouseButton) {
               // Use timestamp to prevent handling multiple events in rapid succession
               final int now = DateTime.now().millisecondsSinceEpoch;
               if (now - _lastRightClickTimestamp < 200) {
@@ -231,11 +238,16 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
             }
 
             // Alternative way to detect CTRL+Click
-            if (widget.handleCtrlClick && widget.link != null && event.kind == PointerDeviceKind.mouse && event.buttons == kPrimaryMouseButton && HardwareKeyboard.instance.isControlPressed) {
+            if (widget.handleCtrlClick &&
+                widget.link != null &&
+                event.kind == PointerDeviceKind.mouse &&
+                event.buttons == kPrimaryMouseButton &&
+                HardwareKeyboard.instance.isControlPressed) {
               _handleCtrlClick();
             }
           },
-          behavior: HitTestBehavior.opaque, // This prevents events from propagating to parent widgets
+          behavior: HitTestBehavior
+              .opaque, // This prevents events from propagating to parent widgets
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             // Remove the onSecondaryTapUp handler to avoid duplicate handling
@@ -244,8 +256,31 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
               widget.onClick?.call();
 
               // Handle CTRL+Click if enabled and link is available
-              if (widget.handleCtrlClick && widget.link != null && _isCtrlPressed) {
+              if (widget.handleCtrlClick &&
+                  widget.link != null &&
+                  _isCtrlPressed) {
                 _handleCtrlClick();
+              }
+            },
+            // Long press gesture for mobile platforms
+            onLongPress: () {
+              // Only trigger on mobile platforms
+              if (AwesomePlatformUtils.isMobile()) {
+                // Ensure we don't have an existing menu already
+                if (local.AwesomeContextMenu.isVisible()) {
+                  local.AwesomeContextMenu.hide();
+                }
+
+                // Get position from the current render object
+                final RenderBox? box = context.findRenderObject() as RenderBox?;
+                if (box != null) {
+                  final Offset position = box.localToGlobal(
+                      box.size.center(Offset.zero) // Center of the widget
+                      );
+
+                  // Show the context menu at this position
+                  _showContextMenu(position);
+                }
               }
             },
             child: widget.child,
@@ -319,7 +354,8 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
                 child: GestureDetector(
                   // This gesture detector prevents menu from closing when interacting with form elements
                   behavior: HitTestBehavior.deferToChild,
-                  onTap: () {}, // Empty onTap to prevent clicks from propagating
+                  onTap:
+                      () {}, // Empty onTap to prevent clicks from propagating
                   child: customMenu,
                 ),
               ),
@@ -351,7 +387,8 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
       );
 
       // Get position from callback
-      finalPosition = widget.customPositionCallback!(globalRect, estimatedMenuSize);
+      finalPosition =
+          widget.customPositionCallback!(globalRect, estimatedMenuSize);
     }
 
     local.AwesomeContextMenu.show(
@@ -384,7 +421,9 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
     }
 
     // Add default link items if link provided and showDefaultLinkItems is true
-    if (widget.link != null && widget.link!.isNotEmpty && widget.showDefaultLinkItems) {
+    if (widget.link != null &&
+        widget.link!.isNotEmpty &&
+        widget.showDefaultLinkItems) {
       final bool isValidUrl = AwesomeLinkHandler.isValidUrl(widget.link!);
 
       if (isValidUrl) {

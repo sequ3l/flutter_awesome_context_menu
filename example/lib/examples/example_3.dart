@@ -33,7 +33,8 @@ class Example3CombinedMenu extends StatelessWidget {
           ),
         ],
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12), // Reduced padding
+          padding: const EdgeInsets.symmetric(
+              vertical: 8, horizontal: 12), // Reduced padding
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),

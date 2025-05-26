@@ -110,7 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       color: primaryColor.withOpacity(0.1),
@@ -147,7 +148,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         crossAxisCount: crossAxisCount,
-                        childAspectRatio: crossAxisCount == 1 ? 3.5 : 2.2, // Reduced aspect ratio for more height
+                        childAspectRatio: crossAxisCount == 1
+                            ? 3.5
+                            : 2.2, // Reduced aspect ratio for more height
                         mainAxisSpacing: 16,
                         crossAxisSpacing: 16,
                         children: [
@@ -176,25 +179,31 @@ class _MyHomePageState extends State<MyHomePage> {
                           Example8HoverEffects(updateAction: _updateLastAction),
 
                           // Example 9: Persistent Menu
-                          Example9PersistentMenu(updateAction: _updateLastAction),
+                          Example9PersistentMenu(
+                              updateAction: _updateLastAction),
 
                           // Example 10: Multi-Selection Menu
-                          Example10MultiSelectMenu(updateAction: _updateLastAction),
+                          Example10MultiSelectMenu(
+                              updateAction: _updateLastAction),
 
                           // Example 13: Menu Item Caching
-                          Example13MenuItemCache(updateAction: _updateLastAction),
+                          Example13MenuItemCache(
+                              updateAction: _updateLastAction),
 
                           // Example 17: Platform Adaptive Menu
-                          Example17PlatformAdaptive(updateAction: _updateLastAction),
+                          Example17PlatformAdaptive(
+                              updateAction: _updateLastAction),
 
                           // Example 18: Theme-Aware Menu
                           Example18ThemeAware(updateAction: _updateLastAction),
 
                           // Example 19: Programmatic Menu
-                          Example19ProgrammaticMenu(updateAction: _updateLastAction),
+                          Example19ProgrammaticMenu(
+                              updateAction: _updateLastAction),
 
                           // Example 20: Keyboard Shortcuts
-                          Example20KeyboardShortcuts(updateAction: _updateLastAction),
+                          Example20KeyboardShortcuts(
+                              updateAction: _updateLastAction),
                         ],
                       );
                     },
@@ -240,7 +249,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         const SizedBox(height: 16),
 
                         // Use the simplified Example11NestedContextMenus widget
-                        Example11NestedContextMenus(updateAction: _updateLastAction),
+                        Example11NestedContextMenus(
+                            updateAction: _updateLastAction),
 
                         const SizedBox(height: 16),
                         // Helper explanation text
@@ -253,7 +263,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.lightbulb_outline, color: Colors.amber.shade800),
+                              Icon(Icons.lightbulb_outline,
+                                  color: Colors.amber.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -316,7 +327,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: double.infinity,
                           // Providing adequate height for the Example12
                           height: 220,
-                          child: Example12HierarchicalMenu(updateAction: _updateLastAction),
+                          child: Example12HierarchicalMenu(
+                              updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),
@@ -330,7 +342,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.menu_open, color: Colors.purple.shade800),
+                              Icon(Icons.menu_open,
+                                  color: Colors.purple.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -392,7 +405,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           width: double.infinity,
                           height: 200, // Increased height from 150px to 200px
-                          child: Example14CustomAnimations(updateAction: _updateLastAction),
+                          child: Example14CustomAnimations(
+                              updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),
@@ -402,11 +416,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                             color: Colors.deepPurple.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.deepPurple.shade300),
+                            border:
+                                Border.all(color: Colors.deepPurple.shade300),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.animation, color: Colors.deepPurple.shade800),
+                              Icon(Icons.animation,
+                                  color: Colors.deepPurple.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -467,7 +483,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           width: double.infinity,
                           height: 180, // Increased height from 120px to 180px
-                          child: Example15FormMenu(updateAction: _updateLastAction),
+                          child: Example15FormMenu(
+                              updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),
@@ -481,7 +498,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.edit_note, color: Colors.blue.shade800),
+                              Icon(Icons.edit_note,
+                                  color: Colors.blue.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -542,7 +560,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           width: double.infinity,
                           height: 300, // Increased height from 240px to 300px
-                          child: Example16MenuPositioning(updateAction: _updateLastAction),
+                          child: Example16MenuPositioning(
+                              updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),

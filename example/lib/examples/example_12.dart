@@ -40,12 +40,14 @@ class Example12HierarchicalMenu extends StatelessWidget {
                       AwesomeContextMenuItem(
                         label: 'Spreadsheet',
                         icon: Icons.grid_on,
-                        onSelected: () => updateAction('New Spreadsheet selected'),
+                        onSelected: () =>
+                            updateAction('New Spreadsheet selected'),
                       ),
                       AwesomeContextMenuItem(
                         label: 'Presentation',
                         icon: Icons.slideshow,
-                        onSelected: () => updateAction('New Presentation selected'),
+                        onSelected: () =>
+                            updateAction('New Presentation selected'),
                       ),
                     ],
                   ),
@@ -224,7 +226,9 @@ class Example12HierarchicalMenu extends StatelessWidget {
       menuItems: [
         AwesomeContextMenuItem(
           label: '$label Submenu',
-          icon: mode == SubMenuInteractionMode.hover ? Icons.mouse : Icons.touch_app,
+          icon: mode == SubMenuInteractionMode.hover
+              ? Icons.mouse
+              : Icons.touch_app,
           subMenuInteractionMode: mode,
           children: [
             AwesomeContextMenuItem(

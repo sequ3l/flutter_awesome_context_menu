@@ -83,7 +83,8 @@ class AwesomeContextMenuItem {
   /// This improves performance by reusing menu item instances that are frequently used.
   /// [key] is a unique identifier for the menu item in the cache.
   /// [builder] is a function that creates the menu item if it's not in the cache.
-  static AwesomeContextMenuItem getCachedItem(String key, AwesomeContextMenuItem Function() builder) {
+  static AwesomeContextMenuItem getCachedItem(
+      String key, AwesomeContextMenuItem Function() builder) {
     // Use public methods from AwesomeMenuItemCache instead of directly accessing private fields
     final cachedItem = AwesomeMenuItemCache.getCachedItem(key);
 

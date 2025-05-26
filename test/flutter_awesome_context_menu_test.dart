@@ -27,12 +27,17 @@ void main() {
       expect(separator.label, '');
     });
 
-    test('AwesomeContextMenuItem asserts on empty label unless it is a separator', () {
+    test(
+        'AwesomeContextMenuItem asserts on empty label unless it is a separator',
+        () {
       expect(() => AwesomeContextMenuItem(label: ''), throwsAssertionError);
-      expect(() => AwesomeContextMenuItem.separator(), isNot(throwsAssertionError));
+      expect(() => AwesomeContextMenuItem.separator(),
+          isNot(throwsAssertionError));
     });
 
-    test('AwesomeContextMenuItem hasSubmenu should be true when children are provided', () {
+    test(
+        'AwesomeContextMenuItem hasSubmenu should be true when children are provided',
+        () {
       const itemWithSubmenu = AwesomeContextMenuItem(
         label: 'Parent Item',
         children: [
@@ -44,7 +49,8 @@ void main() {
       expect(itemWithSubmenu.hasSubmenu, isTrue);
       expect(itemWithSubmenu.children?.length, 2);
 
-      const itemWithoutSubmenu = AwesomeContextMenuItem(label: 'Item without children');
+      const itemWithoutSubmenu =
+          AwesomeContextMenuItem(label: 'Item without children');
       expect(itemWithoutSubmenu.hasSubmenu, isFalse);
       expect(itemWithoutSubmenu.children, isNull);
     });
@@ -87,7 +93,9 @@ void main() {
       expect(AwesomeMenuItemCache.itemCacheSize, 0);
     });
 
-    test('AwesomeMenuItemCache removes least recently used items when limit exceeded', () {
+    test(
+        'AwesomeMenuItemCache removes least recently used items when limit exceeded',
+        () {
       // Set a small cache size limit for testing
       AwesomeMenuItemCache.setMaxItemCacheSize(3);
 
@@ -109,7 +117,8 @@ void main() {
   });
 
   group('AwesomeContextMenuArea Widget Tests', () {
-    testWidgets('AwesomeContextMenuArea renders child correctly', (WidgetTester tester) async {
+    testWidgets('AwesomeContextMenuArea renders child correctly',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -123,7 +132,8 @@ void main() {
       expect(find.text('Test Child'), findsOneWidget);
     });
 
-    testWidgets('AwesomeContextMenuArea with link changes cursor', (WidgetTester tester) async {
+    testWidgets('AwesomeContextMenuArea with link changes cursor',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -147,7 +157,8 @@ void main() {
       expect(mouseRegion.cursor, equals(SystemMouseCursors.click));
     });
 
-    testWidgets('AwesomeContextMenuArea handles onClick callback', (WidgetTester tester) async {
+    testWidgets('AwesomeContextMenuArea handles onClick callback',
+        (WidgetTester tester) async {
       bool onClickCalled = false;
 
       await tester.pumpWidget(
@@ -169,7 +180,8 @@ void main() {
       expect(onClickCalled, isTrue);
     });
 
-    testWidgets('AwesomeContextMenuArea handles mouse events', (WidgetTester tester) async {
+    testWidgets('AwesomeContextMenuArea handles mouse events',
+        (WidgetTester tester) async {
       bool mouseEnterCalled = false;
       bool mouseExitCalled = false;
       bool mouseHoverCalled = false;
@@ -221,7 +233,8 @@ void main() {
       expect(AwesomeContextMenu.getAnimationDuration(), customDuration);
 
       // Reset to default for other tests
-      AwesomeContextMenu.setAnimationDuration(const Duration(milliseconds: 150));
+      AwesomeContextMenu.setAnimationDuration(
+          const Duration(milliseconds: 150));
     });
 
     test('AwesomeContextMenu platform default interaction mode', () {
@@ -240,12 +253,14 @@ void main() {
       expect(AwesomePlatformUtils.isDesktop(), isA<bool>());
       expect(AwesomePlatformUtils.isMobile(), isA<bool>());
       expect(AwesomePlatformUtils.isHoverPlatform, isA<bool>());
-      expect(AwesomePlatformUtils.getPlatformDefaultInteractionMode(), isA<SubMenuInteractionMode>());
+      expect(AwesomePlatformUtils.getPlatformDefaultInteractionMode(),
+          isA<SubMenuInteractionMode>());
     });
   });
 
   group('Hierarchical Menu Structure Tests', () {
-    test('AwesomeContextMenuItem properly represents hierarchical structure', () {
+    test('AwesomeContextMenuItem properly represents hierarchical structure',
+        () {
       const parentItem = AwesomeContextMenuItem(
         label: 'Parent Menu',
         icon: Icons.folder,
@@ -416,7 +431,8 @@ void main() {
       expect(find.text('Custom Builder Test'), findsOneWidget);
 
       // Verify custom builder properties
-      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      final widget = tester
+          .widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
       expect(widget.useCustomBuilder, isTrue);
       expect(widget.customMenuBuilder, isNotNull);
     });
@@ -444,7 +460,8 @@ void main() {
       expect(find.text('Styled Menu Test'), findsOneWidget);
 
       // Verify styling properties
-      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      final widget = tester
+          .widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
       expect(widget.backgroundColor, customColor);
       expect(widget.textColor, Colors.white);
       expect(widget.maxMenuWidth, 300);
@@ -482,7 +499,8 @@ void main() {
       expect(find.text('Event Handlers Test'), findsOneWidget);
 
       // Verify handlers are configured
-      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      final widget = tester
+          .widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
       expect(widget.onRightClick, isNotNull);
       expect(widget.onClick, isNotNull);
       expect(widget.onMouseEnter, isNotNull);
@@ -499,7 +517,8 @@ void main() {
   });
 
   group('Custom Position Callback Tests', () {
-    testWidgets('customPositionCallback is properly configured', (tester) async {
+    testWidgets('customPositionCallback is properly configured',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -518,7 +537,8 @@ void main() {
       expect(find.text('Custom Position Test'), findsOneWidget);
 
       // Verify custom position callback is configured
-      final widget = tester.widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
+      final widget = tester
+          .widget<AwesomeContextMenuArea>(find.byType(AwesomeContextMenuArea));
       expect(widget.customPositionCallback, isNotNull);
     });
   });

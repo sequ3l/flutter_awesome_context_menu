@@ -56,7 +56,9 @@ class AwesomeContextMenu {
 
         // We'll save a reference to the menu state when it's created
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _currentMenuState = (menuOverlay.key as GlobalKey<AwesomeContextMenuOverlayState>).currentState;
+          _currentMenuState =
+              (menuOverlay.key as GlobalKey<AwesomeContextMenuOverlayState>)
+                  .currentState;
         });
 
         return menuOverlay;

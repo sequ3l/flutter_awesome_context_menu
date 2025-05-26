@@ -12,7 +12,8 @@ class Example10MultiSelectMenu extends StatefulWidget {
   });
 
   @override
-  State<Example10MultiSelectMenu> createState() => _Example10MultiSelectMenuState();
+  State<Example10MultiSelectMenu> createState() =>
+      _Example10MultiSelectMenuState();
 }
 
 class _Example10MultiSelectMenuState extends State<Example10MultiSelectMenu> {
@@ -34,7 +35,8 @@ class _Example10MultiSelectMenuState extends State<Example10MultiSelectMenu> {
           return _buildMenuItems();
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12), // Reduced padding
+          padding: const EdgeInsets.symmetric(
+              vertical: 8, horizontal: 12), // Reduced padding
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [
@@ -78,7 +80,8 @@ class _Example10MultiSelectMenuState extends State<Example10MultiSelectMenu> {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2, horizontal: 4),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(3),
@@ -122,7 +125,8 @@ class _Example10MultiSelectMenuState extends State<Example10MultiSelectMenu> {
             AwesomeContextMenu.updateItems(_buildMenuItems());
 
             // Notify of change
-            widget.updateAction('Toggled $option: ${!isSelected ? 'checked' : 'unchecked'}');
+            widget.updateAction(
+                'Toggled $option: ${!isSelected ? 'checked' : 'unchecked'}');
           },
           dismissMenuOnSelect: false, // Keep menu open when toggling options
         ),
@@ -146,8 +150,13 @@ class _Example10MultiSelectMenuState extends State<Example10MultiSelectMenu> {
   }
 
   void _applySelections() {
-    final selectedOptions = _selections.entries.where((entry) => entry.value).map((entry) => entry.key).toList();
-    final selectedText = selectedOptions.isEmpty ? 'No options selected' : 'Selected: ${selectedOptions.join(', ')}';
+    final selectedOptions = _selections.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+    final selectedText = selectedOptions.isEmpty
+        ? 'No options selected'
+        : 'Selected: ${selectedOptions.join(', ')}';
     widget.updateAction(selectedText);
   }
 }

@@ -102,7 +102,9 @@ Widget buildActionFeedback(BuildContext context, String action) {
               textStyle: TextStyle(
                 fontSize: 13,
                 fontStyle: FontStyle.italic,
-                color: action == "No action yet" ? Colors.grey.shade600 : Colors.black87,
+                color: action == "No action yet"
+                    ? Colors.grey.shade600
+                    : Colors.black87,
               ),
             ),
           ),

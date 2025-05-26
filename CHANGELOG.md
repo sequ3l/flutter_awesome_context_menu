@@ -1,3 +1,14 @@
+## 0.0.8
+
+* Fixed long-press context menu functionality on mobile web browsers:
+  * Enhanced platform detection to recognize mobile browsers (Android Chrome, Safari on iOS, etc.)
+  * Updated `AwesomePlatformUtils.isMobile()` to return true for mobile web browsers
+  * Added user agent detection in web platform implementation
+  * Implemented long-press gesture support for web applications running on mobile devices
+  * Fixed missing `onLongPress` handler in `AwesomeContextMenuArea` widget
+  * Added proper context menu positioning for long-press events on mobile browsers
+  * Improved platform reporting to show "web (Android)" or "web (iOS)" for better debugging
+
 ## 0.0.7
 
 * Enhanced test suite:

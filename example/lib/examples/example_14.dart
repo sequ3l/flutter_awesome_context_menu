@@ -11,7 +11,8 @@ class Example14CustomAnimations extends StatefulWidget {
   });
 
   @override
-  State<Example14CustomAnimations> createState() => _Example14CustomAnimationsState();
+  State<Example14CustomAnimations> createState() =>
+      _Example14CustomAnimationsState();
 }
 
 class _Example14CustomAnimationsState extends State<Example14CustomAnimations> {
@@ -39,7 +40,8 @@ class _Example14CustomAnimationsState extends State<Example14CustomAnimations> {
                   _currentDuration = Duration(milliseconds: value.round());
                   AwesomeContextMenu.setAnimationDuration(_currentDuration);
                 });
-                widget.updateAction('Animation duration set to ${value.round()}ms');
+                widget.updateAction(
+                    'Animation duration set to ${value.round()}ms');
               },
             ),
             AwesomeContextMenuArea(
@@ -53,7 +55,8 @@ class _Example14CustomAnimationsState extends State<Example14CustomAnimations> {
                 AwesomeContextMenuItem(
                   label: 'Animated item',
                   icon: Icons.animation,
-                  onSelected: () => widget.updateAction('Selected with ${_currentDuration.inMilliseconds}ms animation'),
+                  onSelected: () => widget.updateAction(
+                      'Selected with ${_currentDuration.inMilliseconds}ms animation'),
                 ),
               ],
               child: Container(
@@ -69,7 +72,8 @@ class _Example14CustomAnimationsState extends State<Example14CustomAnimations> {
                     SizedBox(width: 8),
                     Text(
                       'Custom Animation Speed',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
