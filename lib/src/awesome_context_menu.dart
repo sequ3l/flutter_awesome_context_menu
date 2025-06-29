@@ -25,6 +25,18 @@ class AwesomeContextMenu {
   // Animation duration for menu appearance
   static Duration _animationDuration = const Duration(milliseconds: 150);
 
+  // Flag to prevent concurrent operations
+  static bool _isOperationInProgress = false;
+
+  // Global timestamp to track the last menu show operation
+  static int _lastMenuShowTimestamp = 0;
+
+  // Minimum time between menu operations to prevent rapid-fire requests
+  static const int _minimumMenuInterval = 50; // milliseconds
+
+  // Track when the last overlay was created to prevent premature cleanup
+  static int _lastOverlayCreationTimestamp = 0;
+
   /// Shows the context menu at the specified position.
   static void show({
     required BuildContext context,
@@ -35,40 +47,58 @@ class AwesomeContextMenu {
     Color? textColor,
     Duration? animationDuration,
   }) {
-    // If there's an existing menu, remove it first
-    hide();
+    final int now = DateTime.now().millisecondsSinceEpoch;
 
-    final OverlayState overlay = Overlay.of(context);
+    // Prevent rapid-fire menu requests that could cause visual flicker
+    if (now - _lastMenuShowTimestamp < _minimumMenuInterval) {
+      return;
+    }
 
-    _currentOverlayEntry = OverlayEntry(
-      builder: (context) {
-        final menuOverlay = AwesomeContextMenuOverlay(
-          items: items,
-          position: position,
-          maxMenuWidth: maxMenuWidth,
-          backgroundColor: backgroundColor,
-          textColor: textColor,
-          onDismiss: () {
-            hide();
-          },
-          animationDuration: animationDuration ?? _animationDuration,
-        );
+    // Prevent concurrent operations
+    if (_isOperationInProgress) {
+      return;
+    }
 
-        // We'll save a reference to the menu state when it's created
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _currentMenuState =
-              (menuOverlay.key as GlobalKey<AwesomeContextMenuOverlayState>)
-                  .currentState;
-        });
+    _lastMenuShowTimestamp = now;
+    _isOperationInProgress = true;
 
-        return menuOverlay;
-      },
-    );
+    try {
+      // If there's an existing menu, remove it first
+      hide();
 
-    overlay.insert(_currentOverlayEntry!);
+      final OverlayState overlay = Overlay.of(context);
 
-    // Schedule cache cleanup if not already scheduled
-    _scheduleCacheCleanup();
+      _currentOverlayEntry = OverlayEntry(
+        builder: (context) {
+          final menuOverlay = AwesomeContextMenuOverlay(
+            items: items,
+            position: position,
+            maxMenuWidth: maxMenuWidth,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            onDismiss: () {
+              hide();
+            },
+            animationDuration: animationDuration ?? _animationDuration,
+          );
+
+          // We'll save a reference to the menu state when it's created
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _currentMenuState = (menuOverlay.key as GlobalKey<AwesomeContextMenuOverlayState>).currentState;
+          });
+
+          return menuOverlay;
+        },
+      );
+
+      overlay.insert(_currentOverlayEntry!);
+      _lastOverlayCreationTimestamp = DateTime.now().millisecondsSinceEpoch;
+
+      // Schedule cache cleanup if not already scheduled
+      _scheduleCacheCleanup();
+    } finally {
+      _isOperationInProgress = false;
+    }
   }
 
   /// Updates the menu items of the currently visible context menu (if any).
@@ -83,13 +113,35 @@ class AwesomeContextMenu {
     return _currentOverlayEntry != null;
   }
 
+  /// Checks if a menu operation is currently in progress
+  static bool isOperationInProgress() {
+    return _isOperationInProgress;
+  }
+
   /// Hides the currently visible context menu (if any).
   static void hide() {
+    _cleanupResources();
+  }
+
+  /// Clean up all resources to prevent memory leaks
+  static void _cleanupResources() {
     if (_currentOverlayEntry != null) {
+      // Check if cleanup is being called too soon after overlay creation
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final timeSinceCreation = now - _lastOverlayCreationTimestamp;
+
+      if (timeSinceCreation < 100) {
+        // Block cleanup for first 100ms
+        return;
+      }
+
       _currentOverlayEntry?.remove();
       _currentOverlayEntry = null;
       _currentMenuState = null;
     }
+    // Also cancel the cleanup timer to prevent unnecessary work
+    _cacheCleanupTimer?.cancel();
+    _cacheCleanupTimer = null;
   }
 
   /// Enables or disables automatic cache cleanup

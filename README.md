@@ -102,6 +102,12 @@ This package is compatible with Flutter 3.x and later versions. The package uses
 - 📊 Custom positioning to control where menus appear
 - ⚡ Customizable animation settings
 - 🛠️ Optimized event handling to prevent menu flickering
+- 🔒 **Enterprise-grade stability** with comprehensive memory leak prevention
+- ⚡ **High-performance architecture** with intelligent caching and resource management
+- 🛡️ **Robust error handling** with graceful fallbacks and comprehensive validation
+- ♿ **Accessibility support** with screen reader compatibility and keyboard navigation
+- 🔄 **Race condition prevention** with advanced concurrency control
+- 📱 **Enhanced mobile detection** with comprehensive browser support
 
 ## Installation
 
@@ -109,7 +115,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_awesome_context_menu: ^0.0.6
+  flutter_awesome_context_menu: ^0.0.9
 ```
 
 Or, if you want to use the latest development version:
@@ -127,7 +133,7 @@ This package requires the `url_launcher` package to handle link operations. If y
 
 ```yaml
 dependencies:
-  flutter_awesome_context_menu: ^0.0.6
+  flutter_awesome_context_menu: ^0.0.9
   url_launcher: ^6.3.1 # Already included as a dependency of this package
 ```
 

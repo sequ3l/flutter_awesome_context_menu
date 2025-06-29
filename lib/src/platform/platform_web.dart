@@ -6,15 +6,16 @@ import 'dart:html' as html;
 /// Check if running on a mobile platform (iOS or Android)
 /// Detects mobile browsers using user agent
 bool isMobilePlatform() {
-  // Check if running in a mobile browser
   final userAgent = html.window.navigator.userAgent.toLowerCase();
-  return userAgent.contains('android') ||
-      userAgent.contains('iphone') ||
-      userAgent.contains('ipad') ||
-      userAgent.contains('ipod') ||
-      userAgent.contains('blackberry') ||
-      userAgent.contains('windows phone') ||
-      userAgent.contains('mobile');
+  final platform = html.window.navigator.platform?.toLowerCase() ?? '';
+
+  // More comprehensive mobile detection
+  final mobileKeywords = ['android', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone', 'mobile', 'tablet'];
+
+  // Check for touch support as an additional indicator
+  final touchSupport = html.window.navigator.maxTouchPoints != null && html.window.navigator.maxTouchPoints! > 0;
+
+  return mobileKeywords.any((keyword) => userAgent.contains(keyword) || platform.contains(keyword)) || touchSupport;
 }
 
 /// Check if running on a desktop platform (Windows, macOS, Linux)

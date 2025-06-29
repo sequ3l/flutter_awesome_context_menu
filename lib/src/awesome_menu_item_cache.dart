@@ -6,8 +6,8 @@ class AwesomeMenuItemCache {
   // Private constructor to prevent direct instantiation
   AwesomeMenuItemCache._();
 
-  // Static cache for common menu items
-  static final Map<String, AwesomeContextMenuItem> _itemCache = {};
+  // Static cache for common menu items with timestamps
+  static final Map<String, _CacheEntry> _itemCache = {};
 
   // Static cache for icon widgets to prevent rebuilding
   static final Map<IconData, Icon> _iconCache = {};
@@ -21,6 +21,9 @@ class AwesomeMenuItemCache {
   // Default max cache sizes
   static int _maxItemCacheSize = 50;
   static int _maxIconCacheSize = 25;
+
+  // Cache expiry duration
+  static const Duration _cacheExpiry = Duration(hours: 1);
 
   /// Sets the maximum item cache size
   static void setMaxItemCacheSize(int maxSize) {
@@ -36,19 +39,26 @@ class AwesomeMenuItemCache {
 
   /// Public method to retrieve a cached item by key
   static AwesomeContextMenuItem? getCachedItem(String key) {
-    if (_itemCache.containsKey(key)) {
-      // Update LRU tracking - move this key to the end (most recently used)
-      _lruItemKeys.remove(key);
-      _lruItemKeys.add(key);
+    final entry = _itemCache[key];
+    if (entry == null) return null;
 
-      return _itemCache[key];
+    // Check expiry
+    if (DateTime.now().difference(entry.timestamp) > _cacheExpiry) {
+      _itemCache.remove(key);
+      _lruItemKeys.remove(key);
+      return null;
     }
-    return null;
+
+    // Update LRU tracking - move this key to the end (most recently used)
+    _lruItemKeys.remove(key);
+    _lruItemKeys.add(key);
+
+    return entry.item;
   }
 
   /// Public method to store an item in the cache
   static void storeItem(String key, AwesomeContextMenuItem item) {
-    _itemCache[key] = item;
+    _itemCache[key] = _CacheEntry(item);
     _lruItemKeys.add(key);
     _enforceItemCacheLimit();
   }
@@ -66,26 +76,32 @@ class AwesomeMenuItemCache {
     SubMenuInteractionMode subMenuInteractionMode = SubMenuInteractionMode.auto,
   }) {
     if (_itemCache.containsKey(key)) {
-      final cachedItem = _itemCache[key]!;
+      final cachedEntry = _itemCache[key]!;
 
-      // Update LRU tracking - move this key to the end (most recently used)
-      _lruItemKeys.remove(key);
-      _lruItemKeys.add(key);
+      // Check expiry
+      if (DateTime.now().difference(cachedEntry.timestamp) > _cacheExpiry) {
+        _itemCache.remove(key);
+        _lruItemKeys.remove(key);
+      } else {
+        // Update LRU tracking - move this key to the end (most recently used)
+        _lruItemKeys.remove(key);
+        _lruItemKeys.add(key);
 
-      // Update the callback if provided, keeping the rest cached
-      if (onSelected != null) {
-        return AwesomeContextMenuItem(
-          label: cachedItem.label,
-          icon: cachedItem.icon,
-          onSelected: onSelected,
-          enabled: enabled,
-          isSeparator: cachedItem.isSeparator,
-          dismissMenuOnSelect: dismissMenuOnSelect,
-          children: children ?? cachedItem.children,
-          subMenuInteractionMode: subMenuInteractionMode,
-        );
+        // Update the callback if provided, keeping the rest cached
+        if (onSelected != null) {
+          return AwesomeContextMenuItem(
+            label: cachedEntry.item.label,
+            icon: cachedEntry.item.icon,
+            onSelected: onSelected,
+            enabled: enabled,
+            isSeparator: cachedEntry.item.isSeparator,
+            dismissMenuOnSelect: dismissMenuOnSelect,
+            children: children ?? cachedEntry.item.children,
+            subMenuInteractionMode: subMenuInteractionMode,
+          );
+        }
+        return cachedEntry.item;
       }
-      return cachedItem;
     }
 
     // Create new item and cache it
@@ -101,7 +117,7 @@ class AwesomeMenuItemCache {
     );
 
     // Add to cache and update LRU tracking
-    _itemCache[key] = newItem;
+    _itemCache[key] = _CacheEntry(newItem);
     _lruItemKeys.add(key);
 
     // Check if we need to enforce cache size limits
@@ -174,4 +190,12 @@ class AwesomeMenuItemCache {
 
   /// Gets the number of cached icons
   static int get iconCacheSize => _iconCache.length;
+}
+
+/// Internal cache entry with timestamp for expiration
+class _CacheEntry {
+  final AwesomeContextMenuItem item;
+  final DateTime timestamp;
+
+  _CacheEntry(this.item) : timestamp = DateTime.now();
 }
