@@ -34,12 +34,10 @@ class AwesomeContextMenuWidget extends StatefulWidget {
   });
 
   @override
-  State<AwesomeContextMenuWidget> createState() =>
-      _AwesomeContextMenuWidgetState();
+  State<AwesomeContextMenuWidget> createState() => _AwesomeContextMenuWidgetState();
 }
 
-class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
-    with SingleTickerProviderStateMixin {
+class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget> with SingleTickerProviderStateMixin {
   int? _hoveredItemIndex;
   int? _focusedItemIndex;
 
@@ -55,6 +53,9 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
 
   // Keep a focus node to manage keyboard navigation
   final _menuFocusNode = FocusNode();
+
+  // Cache for position calculations to improve performance
+  final Map<int, Offset> _cachedSubmenuPositions = {};
 
   @override
   void initState() {
@@ -91,8 +92,14 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
 
   @override
   void dispose() {
+    // Stop animation if it's running to prevent race conditions
+    if (_animationController.isAnimating) {
+      _animationController.stop();
+    }
     _animationController.dispose();
     _menuFocusNode.dispose();
+    // Clear cached positions
+    _cachedSubmenuPositions.clear();
     super.dispose();
   }
 
@@ -103,8 +110,7 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
   );
 
   /// Gets the effective submenu interaction mode for a menu item
-  SubMenuInteractionMode _getEffectiveInteractionMode(
-      AwesomeContextMenuItem item) {
+  SubMenuInteractionMode _getEffectiveInteractionMode(AwesomeContextMenuItem item) {
     if (item.subMenuInteractionMode != SubMenuInteractionMode.auto) {
       return item.subMenuInteractionMode;
     }
@@ -114,10 +120,8 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bgColor =
-        widget.backgroundColor ?? theme.popupMenuTheme.color ?? theme.cardColor;
-    final txtColor =
-        widget.textColor ?? theme.textTheme.bodyMedium?.color ?? Colors.black87;
+    final bgColor = widget.backgroundColor ?? theme.popupMenuTheme.color ?? theme.cardColor;
+    final txtColor = widget.textColor ?? theme.textTheme.bodyMedium?.color ?? Colors.black87;
 
     // Calculate the position considering screen boundaries - only do this once
     if (!_positionsCalculated) {
@@ -151,12 +155,10 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
                       if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
                         _moveFocus(1);
                         return KeyEventResult.handled;
-                      } else if (event.logicalKey ==
-                          LogicalKeyboardKey.arrowUp) {
+                      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
                         _moveFocus(-1);
                         return KeyEventResult.handled;
-                      } else if (event.logicalKey ==
-                          LogicalKeyboardKey.arrowRight) {
+                      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
                         // Open submenu if the focused item has one
                         if (_focusedItemIndex != null) {
                           final item = widget.items[_focusedItemIndex!];
@@ -165,19 +167,16 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
                             return KeyEventResult.handled;
                           }
                         }
-                      } else if (event.logicalKey ==
-                          LogicalKeyboardKey.arrowLeft) {
+                      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
                         // Close this menu if it's a submenu
                         if (widget.depth > 0) {
                           widget.onSubmenuClose(widget.depth);
                           return KeyEventResult.handled;
                         }
-                      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
-                          event.logicalKey == LogicalKeyboardKey.space) {
+                      } else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.space) {
                         _activateFocusedItem();
                         return KeyEventResult.handled;
-                      } else if (event.logicalKey ==
-                          LogicalKeyboardKey.escape) {
+                      } else if (event.logicalKey == LogicalKeyboardKey.escape) {
                         // Close the entire menu system
                         MenuDismissHelper.dismissMenu(context);
                         return KeyEventResult.handled;
@@ -185,19 +184,23 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
                     }
                     return KeyEventResult.ignored;
                   },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: List.generate(widget.items.length, (index) {
-                      final item = widget.items[index];
+                  child: Semantics(
+                    label: 'Context Menu',
+                    hint: 'Use arrow keys to navigate, Enter to select, Escape to close',
+                    container: true,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: List.generate(widget.items.length, (index) {
+                        final item = widget.items[index];
 
-                      if (item.isSeparator) {
-                        return const Divider(
-                            height: 1, thickness: 1, color: Colors.black12);
-                      }
+                        if (item.isSeparator) {
+                          return const Divider(height: 1, thickness: 1, color: Colors.black12);
+                        }
 
-                      return _buildMenuItem(index, item, txtColor);
-                    }),
+                        return _buildMenuItem(index, item, txtColor);
+                      }),
+                    ),
                   ),
                 ),
               ),
@@ -211,13 +214,18 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
   /// Calculate the optimal position for the menu, considering screen boundaries
   void _calculateOptimalPosition(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
+    final EdgeInsets viewInsets = MediaQuery.of(context).viewInsets;
+    final EdgeInsets viewPadding = MediaQuery.of(context).viewPadding;
     final double menuWidth = widget.maxMenuWidth;
+
+    // Account for system UI and safe areas
+    final double availableWidth = screenSize.width - viewPadding.horizontal;
+    final double availableHeight = screenSize.height - viewPadding.vertical - viewInsets.bottom;
 
     // Calculate menu dimensions more accurately
     // Using theme-based calculations instead of hard-coded values
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final double baseItemHeight =
-        _itemPadding.vertical + (textTheme.bodyMedium?.fontSize ?? 14.0) * 1.5;
+    final double baseItemHeight = _itemPadding.vertical + (textTheme.bodyMedium?.fontSize ?? 14.0) * 1.5;
 
     // Calculate approximate total height more accurately by considering item types
     double estimatedTotalHeight = 0;
@@ -234,8 +242,8 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
     double top = widget.position.dy;
 
     // Adjust if menu would go off-screen to the right
-    if (left + menuWidth > screenSize.width) {
-      left = screenSize.width - menuWidth - 8;
+    if (left + menuWidth > availableWidth) {
+      left = availableWidth - menuWidth - 8;
 
       // If this is a submenu, position to the left of the parent instead of right
       if (widget.depth > 0) {
@@ -244,12 +252,12 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
     }
 
     // Make sure it's not off-screen to the left
-    if (left < 8) left = 8;
+    if (left < viewPadding.left + 8) left = viewPadding.left + 8;
 
     // Adjust if menu would go off-screen at the bottom
-    if (top + estimatedTotalHeight > screenSize.height) {
-      top = screenSize.height - estimatedTotalHeight - 8;
-      if (top < 8) top = 8; // don't go off the top
+    if (top + estimatedTotalHeight > availableHeight) {
+      top = availableHeight - estimatedTotalHeight - 8;
+      if (top < viewPadding.top + 8) top = viewPadding.top + 8; // don't go off the top
     }
 
     _left = left;
@@ -260,8 +268,7 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
     setState(() {
       int newIndex = (_focusedItemIndex ?? 0) + offset;
       while (newIndex >= 0 && newIndex < widget.items.length) {
-        if (!widget.items[newIndex].isSeparator &&
-            widget.items[newIndex].enabled) {
+        if (!widget.items[newIndex].isSeparator && widget.items[newIndex].enabled) {
           _focusedItemIndex = newIndex;
           break;
         }
@@ -287,7 +294,14 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
   }
 
   void _openSubmenu(AwesomeContextMenuItem item) {
-    if (!item.hasSubmenu || !item.enabled) return;
+    if (!item.hasSubmenu || !item.enabled || !mounted) return;
+
+    // Use cached position if available
+    final cacheKey = item.hashCode;
+    if (_cachedSubmenuPositions.containsKey(cacheKey)) {
+      widget.onSubmenuOpen(item.children!, _cachedSubmenuPositions[cacheKey]!, widget.depth);
+      return;
+    }
 
     int? itemIndex;
     for (int i = 0; i < widget.items.length; i++) {
@@ -301,7 +315,13 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
 
     // We need to find the render box of this menu item for positioning
     final RenderBox? overlay = context.findRenderObject() as RenderBox?;
-    if (overlay == null || !overlay.hasSize) return;
+    if (overlay == null || !overlay.hasSize) {
+      // Schedule retry after next frame
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _openSubmenu(item);
+      });
+      return;
+    }
 
     // Get the size and position of this menu
     final Size menuSize = overlay.size;
@@ -309,8 +329,7 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
 
     // Calculate the approximate position of this specific menu item
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final double baseItemHeight =
-        _itemPadding.vertical + (textTheme.bodyMedium?.fontSize ?? 14.0) * 1.5;
+    final double baseItemHeight = _itemPadding.vertical + (textTheme.bodyMedium?.fontSize ?? 14.0) * 1.5;
 
     // Calculate position more accurately
     double yOffset = 0;
@@ -328,12 +347,14 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
       menuPosition.dy + yOffset, // More accurate position
     );
 
+    // Cache the calculated position
+    _cachedSubmenuPositions[cacheKey] = submenuPosition;
+
     // Open the submenu
     widget.onSubmenuOpen(item.children!, submenuPosition, widget.depth);
   }
 
-  Widget _buildMenuItem(
-      int index, AwesomeContextMenuItem item, Color txtColor) {
+  Widget _buildMenuItem(int index, AwesomeContextMenuItem item, Color txtColor) {
     final hasSubmenu = item.hasSubmenu;
     final interactionMode = _getEffectiveInteractionMode(item);
     final isHovered = _hoveredItemIndex == index;
@@ -353,8 +374,7 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
 
       // Calculate the approximate position of this specific menu item
       final TextTheme textTheme = Theme.of(context).textTheme;
-      final double baseItemHeight = _itemPadding.vertical +
-          (textTheme.bodyMedium?.fontSize ?? 14.0) * 1.5;
+      final double baseItemHeight = _itemPadding.vertical + (textTheme.bodyMedium?.fontSize ?? 14.0) * 1.5;
 
       // Calculate position more accurately
       double yOffset = 0;
@@ -379,19 +399,15 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
     // Get cached icons if possible
     Widget? leadingIcon;
     if (item.icon != null) {
-      leadingIcon = AwesomeMenuItemCache.getIcon(item.icon!,
-          color: item.enabled ? txtColor : txtColor.withOpacity(0.5));
+      leadingIcon = AwesomeMenuItemCache.getIcon(item.icon!, color: item.enabled ? txtColor : txtColor.withOpacity(0.5));
     }
 
     // Trailing icon for submenus or non-dismissing items
     Widget? trailingIcon;
     if (hasSubmenu) {
-      trailingIcon = AwesomeMenuItemCache.getIcon(Icons.arrow_right,
-          size: 16.0,
-          color: item.enabled ? txtColor : txtColor.withOpacity(0.5));
+      trailingIcon = AwesomeMenuItemCache.getIcon(Icons.arrow_right, size: 16.0, color: item.enabled ? txtColor : txtColor.withOpacity(0.5));
     } else if (!item.dismissMenuOnSelect) {
-      trailingIcon = AwesomeMenuItemCache.getIcon(Icons.check_box_outline_blank,
-          size: 14.0, color: txtColor.withOpacity(0.3));
+      trailingIcon = AwesomeMenuItemCache.getIcon(Icons.check_box_outline_blank, size: 14.0, color: txtColor.withOpacity(0.3));
     }
 
     return MouseRegion(
@@ -400,9 +416,7 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
           _hoveredItemIndex = index;
 
           // If this item has a submenu and uses hover interaction, open it
-          if (hasSubmenu &&
-              item.enabled &&
-              interactionMode == SubMenuInteractionMode.hover) {
+          if (hasSubmenu && item.enabled && interactionMode == SubMenuInteractionMode.hover) {
             openSubmenu();
           } else if (_hoveredItemIndex != index) {
             // If hovering over a different item, close any deeper submenus
@@ -415,49 +429,49 @@ class _AwesomeContextMenuWidgetState extends State<AwesomeContextMenuWidget>
           _hoveredItemIndex = null;
         });
       },
-      child: InkWell(
-        onTap: item.enabled
-            ? () {
-                if (hasSubmenu &&
-                    interactionMode == SubMenuInteractionMode.click) {
-                  openSubmenu();
-                } else if (!hasSubmenu && item.onSelected != null) {
-                  item.onSelected!();
-                  if (item.dismissMenuOnSelect) {
-                    // Dismiss the entire menu tree
-                    MenuDismissHelper.dismissMenu(context);
+      child: Semantics(
+        button: true,
+        enabled: item.enabled,
+        label: item.label,
+        hint: item.hasSubmenu ? 'Has submenu - use arrow keys or double tap to open' : (item.enabled ? 'Tap to activate' : 'Disabled'),
+        focused: isFocused,
+        child: InkWell(
+          onTap: item.enabled
+              ? () {
+                  if (hasSubmenu && interactionMode == SubMenuInteractionMode.click) {
+                    openSubmenu();
+                  } else if (!hasSubmenu && item.onSelected != null) {
+                    item.onSelected!();
+                    if (item.dismissMenuOnSelect) {
+                      // Dismiss the entire menu tree
+                      MenuDismissHelper.dismissMenu(context);
+                    }
                   }
                 }
-              }
-            : null,
-        onLongPress: (hasSubmenu &&
-                item.enabled &&
-                interactionMode == SubMenuInteractionMode.longPress)
-            ? () => openSubmenu()
-            : null,
-        child: Container(
-          color: isHovered || isFocused
-              ? Colors.grey.withOpacity(0.1)
-              : Colors.transparent,
-          padding: _itemPadding,
-          child: Row(
-            children: [
-              if (leadingIcon != null) ...[
-                leadingIcon,
-                const SizedBox(width: 12.0),
-              ],
-              Expanded(
-                child: Text(
-                  item.label,
-                  style: TextStyle(
-                    color: item.enabled ? txtColor : txtColor.withOpacity(0.5),
+              : null,
+          onLongPress: (hasSubmenu && item.enabled && interactionMode == SubMenuInteractionMode.longPress) ? () => openSubmenu() : null,
+          child: Container(
+            color: isHovered || isFocused ? Colors.grey.withOpacity(0.1) : Colors.transparent,
+            padding: _itemPadding,
+            child: Row(
+              children: [
+                if (leadingIcon != null) ...[
+                  leadingIcon,
+                  const SizedBox(width: 12.0),
+                ],
+                Expanded(
+                  child: Text(
+                    item.label,
+                    style: TextStyle(
+                      color: item.enabled ? txtColor : txtColor.withOpacity(0.5),
+                    ),
                   ),
                 ),
-              ),
 
-              // Show the appropriate trailing icon
-              if (trailingIcon != null) trailingIcon,
-            ],
+                // Show the appropriate trailing icon
+                if (trailingIcon != null) trailingIcon,
+              ],
+            ),
           ),
         ),
       ),

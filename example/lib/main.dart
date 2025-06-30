@@ -18,7 +18,7 @@ import 'examples/example_13.dart'; // Import menu item caching example
 import 'examples/example_14.dart'; // Import custom animations example
 import 'examples/example_15.dart'; // Import form menu example
 import 'examples/example_16.dart'; // Import positioning example
-import 'examples/example_17.dart'; // Import platform adaptive example
+import 'examples/example_17.dart'; // Import nested context menus example
 import 'examples/example_18.dart'; // Import theme-aware example
 import 'examples/example_19.dart'; // Import programmatic menu example
 import 'examples/example_20.dart'; // Import keyboard shortcuts example
@@ -110,8 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       color: primaryColor.withOpacity(0.1),
@@ -148,9 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         crossAxisCount: crossAxisCount,
-                        childAspectRatio: crossAxisCount == 1
-                            ? 3.5
-                            : 2.2, // Reduced aspect ratio for more height
+                        childAspectRatio: crossAxisCount == 1 ? 3.5 : 2.2, // Reduced aspect ratio for more height
                         mainAxisSpacing: 16,
                         crossAxisSpacing: 16,
                         children: [
@@ -179,31 +176,22 @@ class _MyHomePageState extends State<MyHomePage> {
                           Example8HoverEffects(updateAction: _updateLastAction),
 
                           // Example 9: Persistent Menu
-                          Example9PersistentMenu(
-                              updateAction: _updateLastAction),
+                          Example9PersistentMenu(updateAction: _updateLastAction),
 
                           // Example 10: Multi-Selection Menu
-                          Example10MultiSelectMenu(
-                              updateAction: _updateLastAction),
+                          Example10MultiSelectMenu(updateAction: _updateLastAction),
 
                           // Example 13: Menu Item Caching
-                          Example13MenuItemCache(
-                              updateAction: _updateLastAction),
-
-                          // Example 17: Platform Adaptive Menu
-                          Example17PlatformAdaptive(
-                              updateAction: _updateLastAction),
+                          Example13MenuItemCache(updateAction: _updateLastAction),
 
                           // Example 18: Theme-Aware Menu
                           Example18ThemeAware(updateAction: _updateLastAction),
 
                           // Example 19: Programmatic Menu
-                          Example19ProgrammaticMenu(
-                              updateAction: _updateLastAction),
+                          Example19ProgrammaticMenu(updateAction: _updateLastAction),
 
                           // Example 20: Keyboard Shortcuts
-                          Example20KeyboardShortcuts(
-                              updateAction: _updateLastAction),
+                          Example20KeyboardShortcuts(updateAction: _updateLastAction),
                         ],
                       );
                     },
@@ -249,8 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         const SizedBox(height: 16),
 
                         // Use the simplified Example11NestedContextMenus widget
-                        Example11NestedContextMenus(
-                            updateAction: _updateLastAction),
+                        Example11NestedContextMenus(updateAction: _updateLastAction),
 
                         const SizedBox(height: 16),
                         // Helper explanation text
@@ -263,8 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.lightbulb_outline,
-                                  color: Colors.amber.shade800),
+                              Icon(Icons.lightbulb_outline, color: Colors.amber.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -327,8 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: double.infinity,
                           // Providing adequate height for the Example12
                           height: 220,
-                          child: Example12HierarchicalMenu(
-                              updateAction: _updateLastAction),
+                          child: Example12HierarchicalMenu(updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),
@@ -342,8 +327,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.menu_open,
-                                  color: Colors.purple.shade800),
+                              Icon(Icons.menu_open, color: Colors.purple.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -405,8 +389,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           width: double.infinity,
                           height: 200, // Increased height from 150px to 200px
-                          child: Example14CustomAnimations(
-                              updateAction: _updateLastAction),
+                          child: Example14CustomAnimations(updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),
@@ -416,13 +399,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                             color: Colors.deepPurple.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
-                            border:
-                                Border.all(color: Colors.deepPurple.shade300),
+                            border: Border.all(color: Colors.deepPurple.shade300),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.animation,
-                                  color: Colors.deepPurple.shade800),
+                              Icon(Icons.animation, color: Colors.deepPurple.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -483,8 +464,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           width: double.infinity,
                           height: 180, // Increased height from 120px to 180px
-                          child: Example15FormMenu(
-                              updateAction: _updateLastAction),
+                          child: Example15FormMenu(updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),
@@ -498,8 +478,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.edit_note,
-                                  color: Colors.blue.shade800),
+                              Icon(Icons.edit_note, color: Colors.blue.shade800),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
@@ -560,8 +539,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           width: double.infinity,
                           height: 300, // Increased height from 240px to 300px
-                          child: Example16MenuPositioning(
-                              updateAction: _updateLastAction),
+                          child: Example16MenuPositioning(updateAction: _updateLastAction),
                         ),
 
                         const SizedBox(height: 16),
@@ -581,6 +559,78 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: Text(
                                   'Use the customPositionCallback property to precisely control where menus appear. '
                                   'This is useful for creating custom UI patterns or avoiding screen edges.',
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Special dedicated section for Example 17 (Nested Context Menus with Text Field)
+                  const SizedBox(height: 24),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.teal.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.teal.withOpacity(0.1),
+                        width: 1,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Advanced Example: Nested Context Menus with Text Input',
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.teal.shade700,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Demonstrates proper handling of nested context menus with text fields. Shows how interference between nested menus is prevented.',
+                          style: GoogleFonts.montserrat(
+                            textStyle: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Add Example 17 in its own dedicated space
+                        Example17NestedContextMenus(updateAction: _updateLastAction),
+
+                        const SizedBox(height: 16),
+                        // Helper explanation text
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.teal.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.teal.shade300),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.input, color: Colors.teal.shade800),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'This example solves the common issue where nested context menus interfere with each other. '
+                                  'The text field has its own context menu (cut, copy, paste), while the container has separate options. '
+                                  'Only the appropriate menu appears based on where you right-click.',
                                   style: GoogleFonts.montserrat(
                                     fontSize: 12,
                                   ),

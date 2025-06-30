@@ -24,8 +24,7 @@ class AwesomeContextMenuOverlay extends StatefulWidget {
   }) : super(key: GlobalKey<AwesomeContextMenuOverlayState>());
 
   @override
-  State<AwesomeContextMenuOverlay> createState() =>
-      AwesomeContextMenuOverlayState();
+  State<AwesomeContextMenuOverlay> createState() => AwesomeContextMenuOverlayState();
 }
 
 class AwesomeContextMenuOverlayState extends State<AwesomeContextMenuOverlay> {
@@ -80,12 +79,10 @@ class AwesomeContextMenuOverlayState extends State<AwesomeContextMenuOverlay> {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: widget.onDismiss,
-                onSecondaryTap:
-                    widget.onDismiss, // Also dismiss on right-click outside
-                onTapDown: (_) => widget
-                    .onDismiss(), // Ensure immediate dismissal on tap down
-                onSecondaryTapDown: (_) =>
-                    widget.onDismiss(), // Also for right-clicks
+                onSecondaryTap: widget.onDismiss, // Also dismiss on right-click outside
+                // Remove immediate dismissal handlers that conflict with nested context menus
+                // onTapDown: (_) => widget.onDismiss(),
+                // onSecondaryTapDown: (_) => widget.onDismiss(),
                 child: Container(color: Colors.transparent),
               ),
             ),
@@ -122,8 +119,7 @@ class AwesomeContextMenuOverlayState extends State<AwesomeContextMenuOverlay> {
     );
   }
 
-  void _handleSubmenuOpen(
-      List<AwesomeContextMenuItem> items, Offset position, int depth) {
+  void _handleSubmenuOpen(List<AwesomeContextMenuItem> items, Offset position, int depth) {
     setState(() {
       // Remove any deeper level submenus
       _activeSubmenus.removeWhere((info) => info.depth > depth);
@@ -145,8 +141,7 @@ class AwesomeContextMenuOverlayState extends State<AwesomeContextMenuOverlay> {
     setState(() {
       // Close this submenu and any deeper ones using more efficient lookup
       _activeSubmenus.removeWhere((info) => info.depth >= depth);
-      final depthsToRemove =
-          _submenuLookup.keys.where((d) => d >= depth).toList();
+      final depthsToRemove = _submenuLookup.keys.where((d) => d >= depth).toList();
       for (final d in depthsToRemove) {
         _submenuLookup.remove(d);
       }
