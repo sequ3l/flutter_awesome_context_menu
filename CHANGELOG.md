@@ -1,3 +1,36 @@
+## 0.1.0
+
+* **Fixed Double Context Menu Issue**:
+  * **Custom Gesture Recognizer Implementation**:
+    * Added `RightClickGestureRecognizer` that properly participates in Flutter's gesture arena
+    * Created `SuperRightClickDetector` widget using `RawGestureDetector` for gesture handling
+    * Resolved double menu issues in nested context menu areas
+    * Fixed context menu conflicts with TextField and other interactive widgets
+  
+  * **Gesture Arena Integration**:
+    * Custom recognizer calls `resolve(GestureDisposition.accepted)` to claim gesture ownership
+    * Prevents TextField's built-in context menu from interfering with custom menus
+    * Enables proper nesting of `AwesomeContextMenuArea` widgets
+    * Improved gesture competition handling within Flutter's gesture system
+  
+  * **Architecture Improvements**:
+    * Replaced event interception approaches with proper gesture recognition
+    * Integrated `SuperRightClickDetector` into `AwesomeContextMenuArea` widget
+    * Maintains backward compatibility while resolving gesture conflicts
+    * Better separation between left-click, right-click, and long-press gesture handling
+  
+  * **Stability Enhancements**:
+    * Increased minimum menu interval from 50ms to 100ms for improved debouncing
+    * Enhanced event cleanup with proper timing and resource management
+    * Added comprehensive gesture lifecycle management
+    * Improved reliability across all platforms and widget combinations
+  
+  * **Developer Experience**:
+    * No breaking changes - existing code continues to work unchanged
+    * Nested context menus now work correctly without special configuration
+    * Enhanced debugging with improved gesture recognition logging
+    * Simplified usage - developers can nest context menus without additional considerations
+
 ## 0.0.9
 
 * **Major Stability and Performance Improvements**:
