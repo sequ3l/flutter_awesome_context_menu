@@ -1,6 +1,6 @@
 name: flutter_awesome_context_menu
 description: "A Flutter package that provides a browser-like right-click context menu."
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/sequ3l/flutter_awesome_context_menu
 
 environment:

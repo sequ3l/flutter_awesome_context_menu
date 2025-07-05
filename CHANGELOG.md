@@ -1,3 +1,6 @@
+## 0.1.1
+  * **Fixed Build Issue*
+
 ## 0.1.0
 
 * **Fixed Double Context Menu Issue**:
