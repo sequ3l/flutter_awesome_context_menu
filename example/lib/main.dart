@@ -249,10 +249,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             border: Border.all(color: Colors.amber.shade300),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(Icons.lightbulb_outline, color: Colors.amber.shade800),
                               const SizedBox(width: 8),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   'Nested context menus allow you to create hierarchical right-click menus. '
                                   'The inner menu takes precedence when right-clicking on it, while '
@@ -326,10 +328,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             border: Border.all(color: Colors.purple.shade300),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(Icons.menu_open, color: Colors.purple.shade800),
                               const SizedBox(width: 8),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   'Submenus can be revealed through different interaction methods: '
                                   'hover (desktop), click, or long-press (mobile). Each mode can be '
@@ -402,10 +406,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             border: Border.all(color: Colors.deepPurple.shade300),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(Icons.animation, color: Colors.deepPurple.shade800),
                               const SizedBox(width: 8),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   'Adjust the animation duration to control how quickly context menus appear and disappear. '
                                   'Changes apply to all menus in the application.',
@@ -477,10 +483,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             border: Border.all(color: Colors.blue.shade300),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(Icons.edit_note, color: Colors.blue.shade800),
                               const SizedBox(width: 8),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   'Create rich, interactive context menus with form elements like sliders, '
                                   'text fields, checkboxes, and more using the customMenuBuilder property.',
@@ -552,10 +560,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             border: Border.all(color: Colors.red.shade300),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(Icons.place, color: Colors.red.shade800),
                               const SizedBox(width: 8),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   'Use the customPositionCallback property to precisely control where menus appear. '
                                   'This is useful for creating custom UI patterns or avoiding screen edges.',
@@ -623,10 +633,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             border: Border.all(color: Colors.teal.shade300),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(Icons.input, color: Colors.teal.shade800),
                               const SizedBox(width: 8),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   'This example solves the common issue where nested context menus interfere with each other. '
                                   'The text field has its own context menu (cut, copy, paste), while the container has separate options. '

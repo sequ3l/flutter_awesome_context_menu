@@ -21,6 +21,7 @@ Widget buildExampleCard({
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             title,
@@ -47,9 +48,8 @@ Widget buildExampleCard({
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const Spacer(),
+          const SizedBox(height: 12),
           Center(child: content),
-          const Spacer(),
         ],
       ),
     ),
