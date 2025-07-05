@@ -32,7 +32,7 @@ class AwesomeContextMenu {
   static int _lastMenuShowTimestamp = 0;
 
   // Minimum time between menu operations to prevent rapid-fire requests
-  static const int _minimumMenuInterval = 50; // milliseconds
+  static const int _minimumMenuInterval = 100; // milliseconds - increased from 50
 
   // Track when the last overlay was created to prevent premature cleanup
   static int _lastOverlayCreationTimestamp = 0;

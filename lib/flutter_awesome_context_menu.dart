@@ -8,3 +8,4 @@ export 'src/awesome_context_menu_widget.dart';
 export 'src/awesome_link_handler.dart';
 export 'src/awesome_platform_utils.dart';
 export 'src/awesome_menu_item_cache.dart';
+export 'src/super_right_click_detector.dart';

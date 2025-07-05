@@ -250,7 +250,8 @@ class _Example17NestedContextMenusState extends State<Example17NestedContextMenu
                 child: const Text('Check Clipboard'),
               ),
               const SizedBox(width: 12),
-              Expanded(
+              Flexible(
+                fit: FlexFit.loose,
                 child: Text(
                   'Clipboard: $_clipboardContent',
                   style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),

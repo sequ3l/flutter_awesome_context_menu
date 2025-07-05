@@ -6,6 +6,7 @@ import 'awesome_context_menu_item.dart';
 import 'awesome_link_handler.dart';
 import 'awesome_menu_item_cache.dart';
 import 'awesome_platform_utils.dart';
+import 'super_right_click_detector.dart';
 
 /// A widget that provides a customizable context menu area.
 ///
@@ -122,18 +123,6 @@ class AwesomeContextMenuArea extends StatefulWidget {
   State<AwesomeContextMenuArea> createState() => _AwesomeContextMenuAreaState();
 }
 
-// Global state to track handled events by pointer ID to prevent race conditions
-final Set<int> _handledEvents = <int>{};
-
-// Global lock to prevent multiple widgets from processing the same event simultaneously
-bool _globalRightClickLock = false;
-
-// Global event consumption tracking - tracks events that should be consumed/ignored
-final Set<int> _consumedEvents = <int>{};
-
-// Track which widget is currently processing a menu to prevent overlaps
-int? _currentlyProcessingWidget;
-
 class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
   // Track if the control key is pressed
   bool _isCtrlPressed = false;
@@ -141,11 +130,6 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
   // Cache for the built menu items to avoid rebuilding them on each right-click
   List<AwesomeContextMenuItem>? _cachedMenuItems;
   String? _lastCachedLink;
-
-  // Enhanced event deduplication system
-  int _lastRightClickTimestamp = 0;
-  Offset _lastRightClickPosition = Offset.zero;
-  bool _isProcessingRightClick = false;
 
   // Instance-level overlay entry to prevent memory leaks
   OverlayEntry? _instanceOverlayEntry;
@@ -172,9 +156,6 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the appropriate cursor based on clickability
-    final MouseCursor cursor = _determineCursor();
-
     return Focus(
       onKeyEvent: (FocusNode node, KeyEvent event) {
         // Track control key state
@@ -188,178 +169,33 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
         return KeyEventResult.ignored;
       },
       child: MouseRegion(
-        cursor: cursor,
-        // Handle mouse enter events
-        onEnter: (PointerEnterEvent event) {
-          widget.onMouseEnter?.call(event);
-        },
-        // Handle mouse exit events
-        onExit: (PointerExitEvent event) {
-          widget.onMouseExit?.call(event);
-        },
-        // Handle mouse hover events
-        onHover: (PointerHoverEvent event) {
-          widget.onMouseHover?.call(event);
-        },
+        cursor: _determineCursor(),
+        onEnter: widget.onMouseEnter,
+        onExit: widget.onMouseExit,
+        onHover: widget.onMouseHover,
         child: Listener(
-          // Additionally handle pointer move events for broader compatibility
+          // Handle pointer move events for broader compatibility
           onPointerMove: (PointerMoveEvent event) {
             widget.onMouseMove?.call(event);
           },
+          // Handle CTRL+Click detection
           onPointerDown: (PointerDownEvent event) {
-            // Handle right-click on web and other platforms
-            if (event.kind == PointerDeviceKind.mouse && event.buttons == kSecondaryMouseButton) {
-              final eventId = event.pointer;
-
-              // FIRST: Check if this event has already been consumed by another widget
-              if (_consumedEvents.contains(eventId)) {
-                return;
-              }
-
-              // Enhanced deduplication: check timestamp, position, and processing state
-              final int now = DateTime.now().millisecondsSinceEpoch;
-              final Offset position = event.position;
-
-              // SECOND: Check if another widget is already processing a menu
-              if (_currentlyProcessingWidget != null && _currentlyProcessingWidget != widget.hashCode) {
-                _consumedEvents.add(eventId);
-                Future.delayed(const Duration(milliseconds: 200), () {
-                  _consumedEvents.remove(eventId);
-                });
-                return;
-              }
-
-              // THIRD: Try to acquire global lock immediately - only one widget can succeed
-              if (_globalRightClickLock) {
-                // Mark this event as consumed to prevent other widgets from processing it
-                _consumedEvents.add(eventId);
-                // Clean up consumed events after a delay
-                Future.delayed(const Duration(milliseconds: 200), () {
-                  _consumedEvents.remove(eventId);
-                });
-                return;
-              }
-
-              // Acquire lock immediately (atomic check-and-set simulation)
-              _globalRightClickLock = true;
-              _currentlyProcessingWidget = widget.hashCode;
-
-              // FOURTH: Check if this event ID is already being handled
-              if (_handledEvents.contains(eventId)) {
-                // Release lock and consume event
-                _globalRightClickLock = false;
-                _currentlyProcessingWidget = null;
-                _consumedEvents.add(eventId);
-                return;
-              }
-
-              // FIFTH: Check if we're already processing a right-click in this widget
-              if (_isProcessingRightClick) {
-                // Release lock and consume event
-                _globalRightClickLock = false;
-                _currentlyProcessingWidget = null;
-                _consumedEvents.add(eventId);
-                return;
-              }
-
-              // SIXTH: Check if ANY context menu is currently being processed
-              if (local.AwesomeContextMenu.isOperationInProgress()) {
-                // Release lock and consume event
-                _globalRightClickLock = false;
-                _currentlyProcessingWidget = null;
-                _consumedEvents.add(eventId);
-                return;
-              }
-
-              // SEVENTH: Check if this is a duplicate event (same position within 500ms)
-              if (now - _lastRightClickTimestamp < 500 && (position - _lastRightClickPosition).distance < 5.0) {
-                // Release lock and consume event
-                _globalRightClickLock = false;
-                _currentlyProcessingWidget = null;
-                _consumedEvents.add(eventId);
-                return;
-              }
-
-              // CONSUME THIS EVENT immediately to prevent other widgets from processing it
-              _consumedEvents.add(eventId);
-              _handledEvents.add(eventId);
-
-              // Update tracking variables
-              _lastRightClickTimestamp = now;
-              _lastRightClickPosition = position;
-              _isProcessingRightClick = true;
-
-              // CRITICAL: Double-check that no menu operation started between lock acquisition and now
-              if (local.AwesomeContextMenu.isOperationInProgress()) {
-                _handledEvents.remove(eventId);
-                _globalRightClickLock = false;
-                _currentlyProcessingWidget = null;
-                _isProcessingRightClick = false;
-                return;
-              }
-
-              // Handle menu showing logic with additional delay to prevent interference
-              Future.microtask(() {
-                if (mounted && !local.AwesomeContextMenu.isOperationInProgress()) {
-                  _handleRightClickMenu(position);
-                }
-              });
-
-              // Use a shorter delay for lock release to prevent UI blocking
-              // but still long enough to prevent duplicate processing
-              Future.delayed(const Duration(milliseconds: 100), () {
-                _handledEvents.remove(eventId);
-                _globalRightClickLock = false;
-                _currentlyProcessingWidget = null;
-                _isProcessingRightClick = false;
-              });
-
-              // Clean up consumed events after a longer delay
-              Future.delayed(const Duration(milliseconds: 200), () {
-                _consumedEvents.remove(eventId);
-              });
-            }
-
-            // Alternative way to detect CTRL+Click
             if (widget.handleCtrlClick && widget.link != null && event.kind == PointerDeviceKind.mouse && event.buttons == kPrimaryMouseButton && HardwareKeyboard.instance.isControlPressed) {
               _handleCtrlClick();
             }
           },
-          behavior: HitTestBehavior.opaque, // This prevents events from propagating to parent widgets
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            // Remove the onSecondaryTapUp handler to avoid duplicate handling
-            onTap: () {
-              // Handle onClick callback if provided
-              widget.onClick?.call();
-
-              // Handle CTRL+Click if enabled and link is available
-              if (widget.handleCtrlClick && widget.link != null && _isCtrlPressed) {
-                _handleCtrlClick();
-              }
-            },
-            // Long press gesture for mobile platforms
+          child: SuperRightClickDetector(
+            onRightClick: _handleRightClick,
+            onTap: _handleLeftClick,
             onLongPress: () {
               // Only trigger on mobile platforms
               if (AwesomePlatformUtils.isMobile()) {
-                // Prevent duplicate long-press handling
-                if (_isProcessingRightClick) {
-                  return;
-                }
-
-                _isProcessingRightClick = true;
-
                 // Get position from the current render object
                 final RenderBox? box = context.findRenderObject() as RenderBox?;
                 if (box != null && mounted) {
                   final Offset position = box.localToGlobal(box.size.center(Offset.zero));
                   _handleRightClickMenu(position);
                 }
-
-                // Reset processing flag
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  _isProcessingRightClick = false;
-                });
               }
             },
             child: widget.child,
@@ -549,5 +385,21 @@ class _AwesomeContextMenuAreaState extends State<AwesomeContextMenuArea> {
     _lastCachedLink = widget.link;
 
     return items;
+  }
+
+  /// Handle right-click from the SuperRightClickDetector
+  void _handleRightClick(Offset position) {
+    _handleRightClickMenu(position);
+  }
+
+  /// Handle left-click/tap from the SuperRightClickDetector
+  void _handleLeftClick() {
+    // Handle onClick callback if provided
+    widget.onClick?.call();
+
+    // Handle CTRL+Click if enabled and link is available
+    if (widget.handleCtrlClick && widget.link != null && _isCtrlPressed) {
+      _handleCtrlClick();
+    }
   }
 }
